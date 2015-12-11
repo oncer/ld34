@@ -12,12 +12,20 @@ import flixel.util.FlxMath;
  */
 class PlayState extends FlxState
 {
+	var egg:Egg;
+	var chicken:Chicken;
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
 	override public function create():Void
 	{
 		super.create();
+		egg = new Egg(100, 100);
+		egg.create();
+		chicken = new Chicken(100, 50);
+		chicken.create();
+		add(egg);
+		//add(chicken);
 	}
 	
 	/**

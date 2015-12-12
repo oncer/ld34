@@ -51,7 +51,7 @@ class PlayState extends FlxState
 	public function nextMinigame():Void
 	{
 		if (currentMinigame >= 0) minigames[currentMinigame].destroy();
-		currentMinigame++;
+		currentMinigame = (currentMinigame + 1) % minigames.length;
 		minigames[currentMinigame].init();
 	}
 	
@@ -71,5 +71,12 @@ class PlayState extends FlxState
 	{
 		super.update();
 		minigames[currentMinigame].update();
+		
+		
+		//DEBUG
+		if (FlxG.keys.justPressed.R)
+		{
+			nextMinigame();
+		}
 	}
 }

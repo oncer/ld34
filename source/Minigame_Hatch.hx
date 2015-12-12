@@ -13,6 +13,11 @@ class Minigame_Hatch implements Minigame {
 	{
 
 	}
+	
+	public function destroy():Void
+	{
+		
+	}
 
 	public function update():Void
 	{

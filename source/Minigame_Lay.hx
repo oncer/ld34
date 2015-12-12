@@ -13,6 +13,11 @@ class Minigame_Lay implements Minigame {
 	{
 
 	}
+	
+	public function destroy():Void
+	{
+		
+	}
 
 	public function update():Void
 	{

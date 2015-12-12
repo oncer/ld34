@@ -14,6 +14,11 @@ class Minigame_Breed implements Minigame {
 
 	}
 
+	public function destroy():Void
+	{
+		
+	}
+
 	public function update():Void
 	{
 

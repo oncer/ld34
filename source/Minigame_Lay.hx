@@ -96,12 +96,12 @@ class Minigame_Lay implements Minigame {
 		//SOUND
 		trace("<PFFFWRLT!>");
 		//start timer for egglaying
-		timer.start(0.05, this.layEggDone); // Laying animation duration
+		timer.start(0.2, this.layEggDone); // Laying animation duration
 		substate = LaySubstate.PlopEgg;
 		state.egg.revive();
 		
 		//Hacky egg scale: TODO add method in egg for setting scale while remaining in place! also add public param for min and max scale
-		state.egg.set_size(1.5);
+		state.egg.size = 0.33;
 	}
 	
 	private function layEggDone(Timer:FlxTimer):Void
@@ -115,7 +115,7 @@ class Minigame_Lay implements Minigame {
 	private function startNextGame(Timer:FlxTimer):Void
 	{
 		trace("Starting next minigame..");
-		//state.nextMinigame();
+		state.nextMinigame();
 	}
 	
 	public function destroy():Void

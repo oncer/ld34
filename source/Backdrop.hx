@@ -13,8 +13,7 @@ class Backdrop extends FlxGroup
 	private var img0:FlxSprite;
 
 	private static var images:Array<String> = [
-		"assets/images/background1.png",
-		"assets/images/background2.png"
+		"assets/images/background.png"
 	];
 
 	public static function imgload(spr:FlxSprite, id:Int):Void
@@ -40,12 +39,11 @@ class Backdrop extends FlxGroup
 	public override function update():Void
 	{
 		img0.scale.x = img0.scale.y = zoom;
-		zoom *= 0.99;
+		//zoom *= 0.99;
 		if (zoom < 480/2048) {
 			zoom += 480/1024 - 480/2048;
 			
 			imgload(img0, 1);
 		}
-		trace(zoom);
 	}
 }

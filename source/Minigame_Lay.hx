@@ -23,9 +23,15 @@ class Minigame_Lay implements Minigame {
 	private var substate:LaySubstate;
 	private var timer:FlxTimer;
 	
+	// Constants
+	// positions
 	private var chicken_x:Float = 240;
 	private var chicken_start_y:Float = 405;
-	private var chicken_end_y:Float = 405-32;
+	private var chicken_end_y:Float = 405 - 32;
+	// durations
+	private var dur_prepare:Float = 0.75;
+	private var dur_poop:Float = 0.5;
+	private var dur_delaynext:Float = 0.5;
 
 
 	public function new():Void
@@ -76,8 +82,11 @@ class Minigame_Lay implements Minigame {
 					powerbar_best.revive();
 	
 				// Start timer for prepare duration
-				timer.start(0.5, this.layEgg);
+				timer.start(dur_prepare, this.layEgg);
 				state.chicken.playAnimation("prepare");
+				
+				// HNGGGH
+				FlxG.sound.play("assets/sounds/hngh.wav");
 			}
 			else 
 			{
@@ -87,16 +96,28 @@ class Minigame_Lay implements Minigame {
 				power += 0.03333;
 				power = power % 1;
 				*/
-				time += 0.05;
+				var dt = 0.05;
+				//if (power < dt && powerbar_sound_canplay) {
+				//FlxG.sound.play("assets/sounds/powerbar.wav");
+				//	powerbar_sound_canplay = false;
+				//} else if (power > 0.5)
+				//	powerbar_sound_canplay = true;
+				time += dt;
 				power = 1 - Math.abs(Math.sin(time)); // Fast at top
 			}
 		}
+		else if (substate == LaySubstate.Prepare)
+		{
+			// Chitter while laying egg
+			state.chicken.vibrate(chicken_x, chicken_start_y, 3.0);
+		}
 		else if (substate == LaySubstate.Poop)
 		{
-			// Move and jitter chicken while laying egg
-			var a = timer.progress;
+			// Move chicken while laying egg
+			var t = timer.progress; // 0..1
+			var a = t;//Math.max(0, t * 1.5 - 0.5); // 0..1 --> -0.2 .. 0 ... 1 --> 0 .. 0 ... 1
 			var cur_y = (1 - a) * chicken_start_y + a * chicken_end_y;
-			state.chicken.vibrate(chicken_x, cur_y, 3.0);
+			state.chicken.y = cur_y;
 		}
 	}
 	
@@ -108,7 +129,7 @@ class Minigame_Lay implements Minigame {
 		state.chicken.playAnimation("poop");
 
 		// Start timer for laying duration
-		timer.start(0.3, this.layEggDone); // Laying animation duration
+		timer.start(dur_poop, this.layEggDone); // Laying animation duration
 		
 		// Show egg at initial small scale
 		state.egg.revive();
@@ -120,7 +141,7 @@ class Minigame_Lay implements Minigame {
 		substate = LaySubstate.WaitForNextGame;
 		
 		trace("Pausing before next game..");
-		timer.start(0.5, this.startNextGame); // Pause duration
+		timer.start(dur_delaynext, this.startNextGame); // Pause duration
 		
 		// Hard set chicken end position
 		state.chicken.x = chicken_x; 

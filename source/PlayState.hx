@@ -12,7 +12,7 @@ import flixel.util.FlxMath;
  */
 class PlayState extends FlxState
 {
-	var minigameIdx:UInt;
+	var minigameIdx:Int;
 	var minigames:Array<Minigame>;
 	var egg:Egg;
 	var chicken:Chicken;
@@ -40,7 +40,12 @@ class PlayState extends FlxState
 
 	public function nextMinigame():Void
 	{
+		if (minigameIdx > 0)
+		{
+			minigames[minigameIdx].destroy();
+		}
 		minigameIdx++;
+		minigameIdx = minigameIdx % 3;
 		minigames[minigameIdx].init();
 	}
 	

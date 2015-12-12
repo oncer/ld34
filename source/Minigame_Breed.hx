@@ -26,7 +26,7 @@ class Minigame_Breed implements Minigame {
 		FlxG.watch.add(this, "tchange");		
 		FlxG.watch.add(this, "size");
 
-		dbgSlider = new FlxSprite(240, 400);
+		dbgSlider = new FlxSprite(240, 450);
 		dbgSlider.makeGraphic(20, 20, 0xffffff00);
 		dbgSlider.offset.x = 10;
 		dbgSlider.offset.y = 10;

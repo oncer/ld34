@@ -14,6 +14,8 @@ enum LaySubstate {
 class Minigame_Lay implements Minigame {
 	private var state:PlayState;
 	private var powerbar:FlxBar;
+	private var powerbar_fg:FlxSprite;
+	private var powerbar_bg:FlxSprite;
 	private var power:Float;
 	private var time:Float;
 	private var substate:LaySubstate;
@@ -30,7 +32,9 @@ class Minigame_Lay implements Minigame {
 		var pb_w = 32;
 		var pb_h = 128;
 		powerbar = new FlxBar(240-pb_w/2.0, 200-pb_h/2.0, FlxBar.FILL_BOTTOM_TO_TOP, pb_w, pb_h, this, "power", 0, 1, false);
-		powerbar.createGradientBar([0xffffffff,0xffffffff], [0xffff0000, 0xff00ff00], 1, 90, false, 0xffffffff);
+		//powerbar_fg = new FlxSprite(0,0,)
+		//powerbar.createGradientBar([0xffffffff,0xffffffff], [0xffff0000, 0xff00ff00], 1, 90, false, 0xffffffff);
+		powerbar.createImageBar("assets/images/powerbar_bg.png", "assets/images/powerbar_fg.png");
 		powerbar.kill();
 		state.add(powerbar);
 		timer = new FlxTimer();
@@ -97,10 +101,7 @@ class Minigame_Lay implements Minigame {
 		state.egg.revive();
 		
 		//Hacky egg scale: TODO add method in egg for setting scale while remaining in place! also add public param for min and max scale
-		state.egg.x = state.chicken.x - 16;
-		state.egg.y = state.chicken.y - 32;
-		state.egg.scale.x = 0.5;
-		state.egg.scale.y = 0.5;
+		state.egg.set_size(1.5);
 	}
 	
 	private function layEggDone(Timer:FlxTimer):Void

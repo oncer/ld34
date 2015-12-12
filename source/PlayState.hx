@@ -31,6 +31,7 @@ class PlayState extends FlxState
 		chicken = new Chicken(100, 50);
 		chicken.create();
 		add(egg);
+		add(chicken);
 
 		minigames = [
 			new Minigame_Lay(),

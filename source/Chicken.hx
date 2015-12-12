@@ -1,13 +1,19 @@
 package;
 
-import flixel.FlxSprite;
+import flixel.*;
+import flixel.util.*;
 using flixel.util.FlxSpriteUtil;
 
 class Chicken extends FlxSprite {
 
 	public function create():Void {
-		makeGraphic(64, 64, 0x00000000);
-		drawEllipse(0,0,64,64,0xff00ffff);
+		loadGraphic("assets/images/chicken01.png", true, 64, 64);
+		animation.add("idle", [0,1,2,3], 10, true);
+		animation.play("idle");
+		offset = new FlxPoint(32, 55);
+		setFacingFlip(FlxObject.LEFT, false, false);
+		setFacingFlip(FlxObject.RIGHT, true, false);
+		facing = FlxObject.RIGHT;
 		//animation.add("idle", [0, 1, 2, 3], 10, true);
 	}
 

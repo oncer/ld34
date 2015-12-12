@@ -18,6 +18,7 @@ class PlayState extends FlxState
 
 	public var currentMinigame:Int;
 	var minigames:Array<Minigame>;
+	public var bg:Backdrop;
 	public var egg:Egg;
 	public var chicken:Chicken;
 	/**
@@ -26,10 +27,14 @@ class PlayState extends FlxState
 	override public function create():Void
 	{
 		super.create();
+		bg = new Backdrop();
+		bg.init();
 		egg = new Egg(100, 100);
 		egg.create();
 		chicken = new Chicken(100, 50);
 		chicken.create();
+		
+		add(bg);
 		add(egg);
 		add(chicken);
 

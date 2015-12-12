@@ -32,7 +32,7 @@ class Minigame_Breed implements Minigame {
 		dbgSlider.offset.y = 10;
 
 		state.chicken.x = 240;
-		state.chicken.y = 240;
+		state.chicken.y = 480 * Backdrop.HORIZON;
 		state.add(dbgSlider);
 	}
 

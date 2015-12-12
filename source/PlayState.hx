@@ -12,6 +12,8 @@ import flixel.util.FlxMath;
  */
 class PlayState extends FlxState
 {
+	var minigameIdx:UInt;
+	var minigames:Array<Minigame>;
 	var egg:Egg;
 	var chicken:Chicken;
 	/**
@@ -25,7 +27,21 @@ class PlayState extends FlxState
 		chicken = new Chicken(100, 50);
 		chicken.create();
 		add(egg);
-		//add(chicken);
+
+		minigames = [
+			new Minigame_Lay(),
+			new Minigame_Breed(),
+			new Minigame_Hatch()
+		];
+
+		minigameIdx = -1;
+		nextMinigame();
+	}
+
+	public function nextMinigame():Void
+	{
+		minigameIdx++;
+		minigames[minigameIdx].init();
 	}
 	
 	/**
@@ -43,5 +59,6 @@ class PlayState extends FlxState
 	override public function update():Void
 	{
 		super.update();
-	}	
+		minigames[minigameIdx].update();
+	}
 }

@@ -9,7 +9,7 @@ class Egg extends flixel.FlxSprite {
 	private var tchange:Float; // temperature change
 	private var size:Float; // start with 1
 
-	private var asliufagder:FlxSprite;
+	private var dbgSlider:FlxSprite;
 
 	public function create():Void {
 		size = 1;
@@ -18,8 +18,8 @@ class Egg extends flixel.FlxSprite {
 		makeGraphic(32, 48, 0x00000000);
 		drawEllipse(0,0,32,48,0xffffffff);
 
-		asliufagder = new FlxSprite(240, 400);
-		asliufagder.makeGraphic(20, 20, 0xffffff00);
+		dbgSlider = new FlxSprite(240, 400);
+		dbgSlider.makeGraphic(20, 20, 0xffffff00);
 
 
 		FlxG.watch.add(this, "temperature");
@@ -30,7 +30,7 @@ class Egg extends flixel.FlxSprite {
 
 	public override function update():Void {
 		super.update();
-		tchange = Math.max(-0.01, tchange - 0.001);
+		tchange = Math.max(-0.01, tchange - 0.0005);
 		temperature = Math.min(1, Math.max(-1, temperature + tchange));
 
 		if (FlxG.keys.justPressed.SPACE) {
@@ -38,12 +38,12 @@ class Egg extends flixel.FlxSprite {
 		}
 
 		adjustSize();
-		asliufagder.x = temperature * 240 + 240 - 10;
+		dbgSlider.x = temperature * 240 + 240 - 10;
 	}
 
 	public override function draw():Void {
 		super.draw();
-		asliufagder.draw();
+		dbgSlider.draw();
 	}
 
 	private function adjustSize():Void {

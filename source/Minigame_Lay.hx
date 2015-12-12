@@ -1,5 +1,7 @@
 package;
 
+import flixel.*;
+
 class Minigame_Lay implements Minigame {
 	private var state:PlayState;
 

@@ -1,5 +1,7 @@
 package;
 
+import flixel.*;
+
 class Minigame_Breed implements Minigame {
 	private var state:PlayState;
 

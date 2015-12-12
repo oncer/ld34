@@ -2,8 +2,14 @@ package;
 
 import flixel.*;
 
+enum HatchSubstate {
+	ZoomAway;
+	CrackEgg;
+}
+
 class Minigame_Hatch implements Minigame {
 	private var state:PlayState;
+	private var substate:HatchSubstate;
 
 	public function new():Void
 	{
@@ -21,6 +27,5 @@ class Minigame_Hatch implements Minigame {
 
 	public function update():Void
 	{
-
 	}
 }

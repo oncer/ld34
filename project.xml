@@ -2,7 +2,7 @@
 <project>
 	<!------------------------------APPLICATION SETTINGS---------------------------->
 	
-	<app title="FlxProject" file="FlxProject" main="Main" version="0.0.1" company="HaxeFlixel" />
+	<app title="FlxProject" file="FlxProject" main="Main" version="0.0.1" package="com.shinypixelgames.chicken" company="HaxeFlixel" />
 	
 	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file
 	<!--or you can set the actual size of your file manually at "FlxPreloaderBase-onUpdate-bytesTotal"!-->
@@ -20,10 +20,10 @@
 	<window if="web" orientation="portrait"  />
 	
 	<!--Desktop-specific-->
-	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" />
+	<window if="desktop" orientation="portrait" fullscreen="false" resizable="true" />
 	
 	<!--Mobile-specific-->
-	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" />
+	<window if="mobile" orientation="portrait" fullscreen="true" width="480" height="480" />
 	
 	<!--------------------------------PATHS SETTINGS-------------------------------->
 	

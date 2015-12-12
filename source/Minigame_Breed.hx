@@ -22,7 +22,7 @@ class Minigame_Breed implements Minigame {
 	public function init():Void
 	{
 		size = 1;
-		temperature = 0;
+		temperature = 0.5;
 		tchange = 0;
 
 		FlxG.watch.add(this, "temperature");
@@ -53,7 +53,8 @@ class Minigame_Breed implements Minigame {
 		state.chicken.y = 480 * Backdrop.HORIZON - state.egg.offset.y * state.egg.size;
 
 		temperature = Math.min(1, Math.max(-1, temperature + tchange));
-		temperature -= 0.03*(1.0 - 0.6*temperature*temperature);
+		if (temperature < -0.99) tchange = Math.max(0, tchange);
+		temperature -= 0.03*(1.0 - temperature*temperature);
 
 		echange = (1 - Math.abs(temperature)) * 0.003;
 		state.egg.size += echange;

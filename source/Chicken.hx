@@ -13,7 +13,8 @@ class Chicken extends FlxSprite {
 		animation.add("poop", [3], 0, false);
 		animation.add("wiggle", [4, 5], 15, true);
 		animation.play("idle");
-		offset = new FlxPoint(32, 55);
+		offset = new FlxPoint(32, 59);
+		origin = offset;
 		setFacingFlip(FlxObject.LEFT, false, false);
 		setFacingFlip(FlxObject.RIGHT, true, false);
 		facing = FlxObject.RIGHT;

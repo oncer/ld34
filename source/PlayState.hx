@@ -12,8 +12,14 @@ import flixel.util.FlxMath;
  */
 class PlayState extends FlxState
 {
-	var egg:Egg;
-	var chicken:Chicken;
+	public static inline var MINIGAME_LAY:Int = 0;
+	public static inline var MINIGAME_BREED:Int = 1;
+	public static inline var MINIGAME_HATCH:Int = 2; 
+
+	public var currentMinigame:Int;
+	var minigames:Array<Minigame>;
+	public var egg:Egg;
+	public var chicken:Chicken;
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
@@ -25,7 +31,22 @@ class PlayState extends FlxState
 		chicken = new Chicken(100, 50);
 		chicken.create();
 		add(egg);
-		//add(chicken);
+
+		minigames = [
+			new Minigame_Lay(),
+			new Minigame_Breed(),
+			new Minigame_Hatch()
+		];
+
+		currentMinigame = 0;
+		nextMinigame();
+	}
+
+	public function nextMinigame():Void
+	{
+		if (currentMinigame >= 0) minigames[currentMinigame].destroy();
+		currentMinigame++;
+		minigames[currentMinigame].init();
 	}
 	
 	/**
@@ -43,5 +64,6 @@ class PlayState extends FlxState
 	override public function update():Void
 	{
 		super.update();
-	}	
+		minigames[currentMinigame].update();
+	}
 }

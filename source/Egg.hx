@@ -15,8 +15,10 @@ class Egg extends flixel.FlxSprite
 	}
 
 	public function create():Void {
-		makeGraphic(32, 48, 0x00000000);
-		drawEllipse(0,0,32,48,0xffffffff);
+		loadGraphic("assets/images/egg01.png");
+		origin.x = width / 2;
+		origin.y = height - 5;
+		offset = origin;
 
 		//animation.add("idle", [0, 1, 2, 3], 10, true);
 	}

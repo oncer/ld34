@@ -26,7 +26,7 @@ class Minigame_Breed implements Minigame {
 		FlxG.watch.add(this, "tchange");		
 		FlxG.watch.add(this, "size");
 
-		dbgSlider = new FlxSprite(240, 400);
+		dbgSlider = new FlxSprite(240, 450);
 		dbgSlider.makeGraphic(20, 20, 0xffffff00);
 		dbgSlider.offset.x = 10;
 		dbgSlider.offset.y = 10;
@@ -34,6 +34,8 @@ class Minigame_Breed implements Minigame {
 		state.chicken.x = 240;
 		state.chicken.y = 480 * Backdrop.HORIZON;
 		state.add(dbgSlider);
+
+		state.egg.size = 0.33;
 	}
 
 	public function destroy():Void
@@ -43,6 +45,8 @@ class Minigame_Breed implements Minigame {
 
 	public function update():Void
 	{
+		state.chicken.y = 480 * Backdrop.HORIZON - state.egg.offset.y * state.egg.size;
+
 		tchange = Math.max(0, tchange - 0.0005);
 		temperature = Math.min(1, Math.max(-1, temperature + tchange));
 		temperature -= (temperature + 1) * 0.003;

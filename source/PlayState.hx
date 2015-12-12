@@ -44,7 +44,7 @@ class PlayState extends FlxState
 			new Minigame_Hatch()
 		];
 
-		currentMinigame = 0;
+		currentMinigame = -1;
 		nextMinigame();
 	}
 

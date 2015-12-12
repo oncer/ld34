@@ -22,9 +22,9 @@ class Minigame_Lay implements Minigame {
 	private var substate:LaySubstate;
 	private var timer:FlxTimer;
 	
-	private var chicken_x:Float = 240;
-	private var chicken_start_y:Float = 405;
-	private var chicken_end_y:Float = 405-32;
+	private var chicken_x:Float = 480 * 0.5;
+	private var chicken_start_y:Float = 480 * Backdrop.HORIZON;
+	private var chicken_end_y:Float;
 
 
 	public function new():Void
@@ -46,10 +46,11 @@ class Minigame_Lay implements Minigame {
 		time = 0;
 		substate = LaySubstate.WaitForInput;
 		state.egg.x = 240;
-		state.egg.y = 405;
+		state.egg.y = 480 * Backdrop.HORIZON;
 		state.egg.kill();
 		state.chicken.x = chicken_x;
 		state.chicken.y = chicken_start_y;
+		chicken_end_y = state.egg.y - state.egg.offset.y * 0.33;
 		powerbar.revive();
 	}
 

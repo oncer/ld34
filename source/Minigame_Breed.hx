@@ -10,6 +10,9 @@ class Minigame_Breed implements Minigame {
 	private var size:Float;
 	private var temperature:Float; // -1 . 0 . 1
 	private var tchange:Float; // temperature change
+	private var echange:Float; // egg size change
+
+	private var timer:FlxTimer; // egg timer
 
 	public function new():Void
 	{
@@ -36,6 +39,8 @@ class Minigame_Breed implements Minigame {
 		state.add(dbgSlider);
 
 		state.egg.size = 0.33;
+
+		timer = new FlxTimer(10); // 10 seconds?!
 	}
 
 	public function destroy():Void
@@ -47,14 +52,23 @@ class Minigame_Breed implements Minigame {
 	{
 		state.chicken.y = 480 * Backdrop.HORIZON - state.egg.offset.y * state.egg.size;
 
-		tchange = Math.max(0, tchange - 0.0005);
 		temperature = Math.min(1, Math.max(-1, temperature + tchange));
-		temperature -= (temperature + 1) * 0.003;
+		temperature -= 0.03*(1.0 - 0.6*temperature*temperature);
 
-		if (FlxG.keys.justPressed.SPACE) {
-			tchange = Math.min(0.02, tchange + 0.01 - temperature * 0.005);
+		echange = (1 - Math.abs(temperature)) * 0.003;
+		state.egg.size += echange;
+
+		if (FlxG.keys.pressed.SPACE) {
+			tchange += 0.001;
+		} else {
+			tchange -= 0.001;
 		}
+		tchange = Math.max(-0.05, Math.min(0.05, tchange));
 
 		dbgSlider.x = temperature * 240 + 240;
+
+		if (timer.finished) {
+			state.nextMinigame();
+		}
 	}
 }

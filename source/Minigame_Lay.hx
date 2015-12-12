@@ -4,6 +4,7 @@ import flixel.*;
 import flixel.ui.FlxBar;
 import flixel.util.FlxTimer;
 
+
 enum LaySubstate {
 	WaitForInput;
 	WaitForPlop;
@@ -21,9 +22,9 @@ class Minigame_Lay implements Minigame {
 	private var substate:LaySubstate;
 	private var timer:FlxTimer;
 	
-	private var chicken_start_y:Float = 405;
-	private var chicken_end_y:Float = 405-32;
-	
+	private var chicken_x:Float = 480 * 0.5;
+	private var chicken_start_y:Float = 480 * Backdrop.HORIZON;
+	private var chicken_end_y:Float;
 
 
 	public function new():Void
@@ -45,22 +46,16 @@ class Minigame_Lay implements Minigame {
 		time = 0;
 		substate = LaySubstate.WaitForInput;
 		state.egg.x = 240;
-		state.egg.y = 405;
+		state.egg.y = 480 * Backdrop.HORIZON;
 		state.egg.kill();
-		state.chicken.x = 240;
+		state.chicken.x = chicken_x;
 		state.chicken.y = chicken_start_y;
+		chicken_end_y = state.egg.y - state.egg.offset.y * 0.33;
 		powerbar.revive();
 	}
 
 	public function update():Void
 	{
-		//DEBUG
-		if (FlxG.keys.justPressed.R)
-		{
-			destroy();
-			init();
-			return;
-		}
 		
 		if (substate == LaySubstate.WaitForInput)
 		{
@@ -72,6 +67,7 @@ class Minigame_Lay implements Minigame {
 				
 				//Init timer for pause before laying egg
 				timer.start(0.5, this.layEgg);
+				state.chicken.playAnimation("prepare");
 				trace("...");
 			}
 			else 
@@ -87,7 +83,8 @@ class Minigame_Lay implements Minigame {
 		else if (substate == LaySubstate.PlopEgg)
 		{
 			var a = timer.progress;
-			state.chicken.y = (1 - a) * chicken_start_y + a * chicken_end_y;
+			var cur_y = (1 - a) * chicken_start_y + a * chicken_end_y;
+			state.chicken.vibrate(chicken_x, cur_y, 3.0);
 		}
 	}
 	
@@ -95,8 +92,10 @@ class Minigame_Lay implements Minigame {
 	{
 		//SOUND
 		trace("<PFFFWRLT!>");
+		FlxG.sound.play("assets/sounds/fart.wav");
+		state.chicken.playAnimation("poop");
 		//start timer for egglaying
-		timer.start(0.2, this.layEggDone); // Laying animation duration
+		timer.start(0.3, this.layEggDone); // Laying animation duration
 		substate = LaySubstate.PlopEgg;
 		state.egg.revive();
 		
@@ -108,7 +107,10 @@ class Minigame_Lay implements Minigame {
 	{
 		trace("Wait a bit for next minigame..");
 		timer.start(0.5, this.startNextGame); // Pause duration
-		state.chicken.y = chicken_end_y; // hard set end position
+		// hard set end position
+		state.chicken.x = chicken_x; 
+		state.chicken.y = chicken_end_y;
+		state.chicken.playAnimation("idle");
 		substate = LaySubstate.WaitForNextGame;
 	}
 	

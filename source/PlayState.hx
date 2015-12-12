@@ -12,10 +12,14 @@ import flixel.util.FlxMath;
  */
 class PlayState extends FlxState
 {
-	var minigameIdx:Int;
+	public static inline var MINIGAME_LAY:Int = 0;
+	public static inline var MINIGAME_BREED:Int = 1;
+	public static inline var MINIGAME_HATCH:Int = 2; 
+
+	public var currentMinigame:Int;
 	var minigames:Array<Minigame>;
-	var egg:Egg;
-	var chicken:Chicken;
+	public var egg:Egg;
+	public var chicken:Chicken;
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
@@ -34,19 +38,15 @@ class PlayState extends FlxState
 			new Minigame_Hatch()
 		];
 
-		minigameIdx = -1;
+		currentMinigame = -1;
 		nextMinigame();
 	}
 
 	public function nextMinigame():Void
 	{
-		if (minigameIdx > 0)
-		{
-			minigames[minigameIdx].destroy();
-		}
-		minigameIdx++;
-		minigameIdx = minigameIdx % 3;
-		minigames[minigameIdx].init();
+		if (currentMinigame >= 0) minigames[currentMinigame].destroy();
+		currentMinigame++;
+		minigames[currentMinigame].init();
 	}
 	
 	/**
@@ -64,6 +64,6 @@ class PlayState extends FlxState
 	override public function update():Void
 	{
 		super.update();
-		minigames[minigameIdx].update();
+		minigames[currentMinigame].update();
 	}
 }

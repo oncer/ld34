@@ -24,6 +24,8 @@ class Minigame_Lay implements Minigame {
 	private var timer:FlxTimer;
 	
 	// Constants
+	// speed
+	private var power_dt:Float = 0.05;
 	// positions
 	private var chicken_x:Float = 480 * 0.5;
 	private var chicken_start_y:Float = 480 * Backdrop.HORIZON;
@@ -41,10 +43,9 @@ class Minigame_Lay implements Minigame {
 		// Create and position powerbar
 		var pb_w = 48;
 		var pb_h = 128;
-		powerbar = new FlxBar(240-pb_w/2.0, 200-pb_h/2.0, FlxBar.FILL_BOTTOM_TO_TOP, pb_w, pb_h, this, "power", 0, 1, false);
+		powerbar = new FlxBar(240-pb_w/2.0, 200-pb_h/2.0, FlxBar.FILL_BOTTOM_TO_TOP, pb_w, pb_h, this, "power", 0, 128, false);
 		powerbar.createImageBar("assets/images/powerbar_bg.png", "assets/images/powerbar_fg.png");
 		powerbar_best = new FlxSprite(240 - pb_w / 2.0, 200 - pb_h / 2.0, "assets/images/powerbar_white.png");
-		powerbar_best.kill();
 		powerbar.kill();
 		state.add(powerbar);
 		state.add(powerbar_best);
@@ -65,6 +66,8 @@ class Minigame_Lay implements Minigame {
 		state.chicken.y = chicken_start_y;
 		chicken_end_y = state.egg.y - state.egg.offset.y * 0.33;
 		powerbar.revive();
+		powerbar_best.revive();
+		powerbar_best.visible = false;
 	}
 
 	public function update():Void
@@ -76,11 +79,6 @@ class Minigame_Lay implements Minigame {
 			{
 				substate = LaySubstate.Prepare;
 				trace("PooPower: " + power);
-				
-				if (power > 0.985) // round up
-					power = 1;
-				if (power == 1) // visualize perfect score
-					powerbar_best.revive();
 	
 				// Start timer for prepare duration
 				timer.start(dur_prepare, this.layEgg);
@@ -94,22 +92,30 @@ class Minigame_Lay implements Minigame {
 				// Charge power-bar
 				/*
 				// Linear
-				power += 0.03333;
+				power += power_dt;
 				power = power % 1;
 				*/
-				var dt = 0.05;
 				//if (power < dt && powerbar_sound_canplay) {
 				//FlxG.sound.play("assets/sounds/powerbar.wav");
 				//	powerbar_sound_canplay = false;
 				//} else if (power > 0.5)
 				//	powerbar_sound_canplay = true;
-				time += dt;
+				time += power_dt;
 				power = 1 - Math.abs(Math.sin(time)); // Fast at top
+				power = power * 128;
+				//trace (power);
+				
+				if (power > 123) // round up
+					power = 128;
+				if (power >= 127 && !powerbar_best.visible) // visualize perfect score
+					powerbar_best.visible = true;
+				else if (powerbar_best.visible)
+					powerbar_best.visible = false;
 			}
 		}
 		else if (substate == LaySubstate.Prepare)
 		{
-			// Chitter while laying egg
+			// Jitter while laying egg
 			state.chicken.vibrate(chicken_x, chicken_start_y, 3.0);
 		}
 		else if (substate == LaySubstate.Poop)

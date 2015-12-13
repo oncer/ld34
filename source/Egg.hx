@@ -7,7 +7,8 @@ import flixel.util.*;
 
 class Egg extends flixel.FlxSprite
 {
-	
+	public static inline var SIZE_LAY = 0.33;
+	public static inline var SIZE_HATCH = 0.75;
 	public var size(get, set):Float;
 	public function get_size():Float {
 		return scale.x;

@@ -6,7 +6,7 @@ import flixel.ui.FlxBar;
 
 enum BreedSubstate {
 	Breed;
-	TimeUp;
+	//TimeUp;
 	FlyZoom;
 }
 
@@ -28,7 +28,8 @@ class Minigame_Breed implements Minigame {
 	private var substate:BreedSubstate;
 
 	private var zoomInitial:Float;
-	private var zoomTarget:Float;
+	private var zoomTargetChicken:Float;
+	private var zoomTargetBG:Float;
 	private var finalEggSize:Float;
 
 	public function new():Void
@@ -47,6 +48,7 @@ class Minigame_Breed implements Minigame {
 		FlxG.watch.add(this, "tchange");		
 		FlxG.watch.add(this, "size");
 		
+		
 		timer = new FlxTimer(10); // 10 seconds?!
 		sndTimer = new FlxTimer(0.5, function(t:FlxTimer) { FlxG.sound.play("assets/sounds/tick.wav"); }, 19);
 
@@ -59,9 +61,9 @@ class Minigame_Breed implements Minigame {
 		timebar = new FlxBar(240 - 144, 420, FlxBar.FILL_HORIZONTAL_INSIDE_OUT, 288, 16, this, "timeremaining", 0, 1, false);
 		timebar.createImageBar(null, "assets/images/timebar.png", 0x00000000);
 		timeremaining = 1;
+		state.add(timebar);
 		state.add(thermoSlider);
 		state.add(thermoInd);
-		state.add(timebar);
 
 		state.chicken.x = 240;
 		state.chicken.y = 480 * Backdrop.HORIZON;
@@ -76,6 +78,9 @@ class Minigame_Breed implements Minigame {
 		state.remove(timebar);
 		timer.cancel();
 		sndTimer.cancel();
+		state.chicken.zoom = 1;
+		state.chicken.velocity.y = 0;
+		state.chicken.rocketOff();
 	}
 
 	public function update():Void
@@ -105,8 +110,13 @@ class Minigame_Breed implements Minigame {
 			
 			timeremaining = 1 - timer.progress;
 			if (timer.finished) {
-				substate = BreedSubstate.TimeUp;
-				timer.start(1);
+				substate = BreedSubstate.FlyZoom;
+				state.chicken.playAnimation("idle");
+				zoomInitial = state.bg.zoom;
+				finalEggSize = state.egg.size;
+				zoomTargetChicken = Egg.SIZE_HATCH / finalEggSize;
+				zoomTargetBG = state.bg.zoom * Egg.SIZE_HATCH / finalEggSize;
+				timer.start(3);
 				state.chicken.rocket();
 				FlxG.sound.play("assets/sounds/timer.wav");
 				FlxG.sound.play("assets/sounds/rocket.wav");
@@ -120,22 +130,13 @@ class Minigame_Breed implements Minigame {
 				FlxG.sound.play("assets/sounds/wiggle.wav");
 			}
 			else if (FlxG.keys.justReleased.SPACE) state.chicken.playAnimation("idle");
-
-		} else if (substate == BreedSubstate.TimeUp) {
-			if (timer.finished) {
-				substate = BreedSubstate.FlyZoom;
-				state.chicken.playAnimation("idle");
-				zoomInitial = state.bg.zoom;
-				finalEggSize = state.egg.size;
-				zoomTarget = 0.33 / finalEggSize;
-				timer.start(3);
-			}
 		} else if (substate == BreedSubstate.FlyZoom) {
 			//TODO fly
 			var f:Float = (timer.finished) ? 1.0 : timer.progress;
-			state.chicken.velocity.y = Math.max(-300, state.chicken.velocity.y - 1);
-			state.egg.size = finalEggSize + (0.33 - finalEggSize) * f;
-			state.bg.zoom = state.chicken.zoom = zoomInitial + (zoomTarget - zoomInitial) * f;
+			state.chicken.velocity.y = Math.min(-300, Math.max(-1000, state.chicken.velocity.y - 1));
+			state.egg.size = finalEggSize + (Egg.SIZE_HATCH - finalEggSize) * f;
+			state.chicken.zoom = 1 + (zoomTargetChicken - 1) * f;
+			state.bg.zoom = zoomInitial + (zoomTargetBG - zoomInitial) * f;
 			if (timer.finished) {
 				state.nextMinigame();
 			}

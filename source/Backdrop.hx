@@ -11,11 +11,19 @@ class Backdrop extends FlxGroup
 	public static inline var HORIZON:Float = 1731/2048;
 	public var zoom:Float;
 	private var img:Array<FlxSprite>;
+	private var drawIdx:Int;
 
 	private static var images:Array<String> = [
 		"assets/images/backdrop01.png",
 		"assets/images/backdrop02.png",
-		"assets/images/backdrop03.png"
+		"assets/images/backdrop03.png",
+		"assets/images/backdrop04.png",
+		"assets/images/backdrop05.png",
+		"assets/images/backdrop06.png",
+		"assets/images/backdrop07.png",
+		"assets/images/backdrop08.png",
+		"assets/images/backdrop09.png",
+		"assets/images/backdrop10.png"
 	];
 
 	public static function imgload(spr:FlxSprite, id:Int):Void
@@ -42,6 +50,7 @@ class Backdrop extends FlxGroup
 			i--;
 		}
 		zoom = 1;
+		drawIdx = 0;
 	}
 
 	// zoom factor: 2048/2048 ... 480/2048
@@ -54,5 +63,19 @@ class Backdrop extends FlxGroup
 			spr.scale.x = spr.scale.y = zoom * zf;
 			zf >>= 1;
 		}
+		drawIdx = 0;
+		zf = 1<<(img.length -1);
+		var i:Int = 0;
+		for (i in 0...img.length) {
+			if (zoom > 480/(2048*zf)) {
+				drawIdx = i;
+			}
+			zf >>= 1;
+		}
+	}
+
+	public override function draw():Void
+	{
+		img[drawIdx].draw();
 	}
 }

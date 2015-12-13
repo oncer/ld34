@@ -7,6 +7,7 @@ using flixel.util.FlxSpriteUtil;
 class Chicken extends FlxSprite {
 
 	private var rocketfire:FlxSprite;
+	private var explosion:FlxSprite;
 
 	private var _zoom:Float = 1;
 	public var zoom(get,set):Float;
@@ -45,14 +46,31 @@ class Chicken extends FlxSprite {
 		rocketfire.origin.set(16, 0);
 		rocketfire.kill();
 
+		explosion = new FlxSprite();
+		explosion.loadGraphic("assets/images/explosion.png", true, 64, 64);
+		explosion.animation.add("explode", [0,1,2,3,4,5,7,8], 15, false);
+		explosion.offset.set(32, 16);
+		explosion.origin.set(32, 16);
+		explosion.kill();
+
 		zoom = 1;
 	}
 
 	public function rocket():Void
 	{
+		explosion.x = x;
+		explosion.y = y;
+		explosion.revive();
+		explosion.animation.play("explode");
 		rocketfire.x = x;
 		rocketfire.y = y;
 		rocketfire.revive();
+	}
+
+	public function rocketOff():Void
+	{
+		explosion.kill();
+		rocketfire.kill();
 	}
 	
 	public function vibrate(x:Float, y:Float, strength:Float):Void {
@@ -69,10 +87,13 @@ class Chicken extends FlxSprite {
 		rocketfire.x = x;
 		rocketfire.y = y;
 		rocketfire.update();
+		explosion.update();
+		if (explosion.animation.finished) explosion.kill();
 	}
 
 	public override function draw():Void {
 		if (rocketfire.exists) rocketfire.draw();
 		super.draw();
+		if (explosion.exists) explosion.draw();
 	}
 }

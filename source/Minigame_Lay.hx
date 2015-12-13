@@ -66,7 +66,7 @@ class Minigame_Lay implements Minigame {
 		state.chicken.revive();
 		state.chicken.x = chicken_x;
 		state.chicken.y = chicken_start_y;
-		chicken_end_y = state.egg.y - state.egg.offset.y * 0.33;
+		chicken_end_y = state.egg.y - state.egg.offset.y * 0.33 + 3;
 		powerbar.revive();
 		powerbar_best.visible = false;
 		powerbar_best.revive();

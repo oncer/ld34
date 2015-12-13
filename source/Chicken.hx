@@ -6,6 +6,24 @@ using flixel.util.FlxSpriteUtil;
 
 class Chicken extends FlxSprite {
 
+	private var rocketfire:FlxSprite;
+
+	private var _zoom:Float = 1;
+	public var zoom(get,set):Float;
+	public function set_zoom(Value:Float):Float
+	{
+		var scaleOriginY:Float = 480 * Backdrop.HORIZON;
+		y = scaleOriginY + (y - scaleOriginY) * Value/_zoom;
+		_zoom = Value;
+		scale.set(Value, Value);
+		rocketfire.scale.set(scale.x, scale.y);
+		return Value;
+	}
+
+	public function get_zoom():Float {
+		return _zoom;
+	}
+
 	public function create():Void {
 		loadGraphic("assets/images/chicken01.png", true, 64, 64);
 		animation.add("idle", [0,1], 7, true);
@@ -13,11 +31,28 @@ class Chicken extends FlxSprite {
 		animation.add("poop", [3], 0, false);
 		animation.add("wiggle", [4, 5], 10, true);
 		animation.play("idle");
-		offset = new FlxPoint(32, 59);
+		offset = new FlxPoint(32, height);
 		origin = offset;
 		setFacingFlip(FlxObject.LEFT, false, false);
 		setFacingFlip(FlxObject.RIGHT, true, false);
 		facing = FlxObject.RIGHT;
+
+		rocketfire = new FlxSprite();
+		rocketfire.loadGraphic("assets/images/rocketfire.png", true, 32, 48);
+		rocketfire.animation.add("fire", [0,1,2,3], 7, true);
+		rocketfire.animation.play("fire");
+		rocketfire.offset.set(16, 0);
+		rocketfire.origin.set(16, 0);
+		rocketfire.kill();
+
+		zoom = 1;
+	}
+
+	public function rocket():Void
+	{
+		rocketfire.x = x;
+		rocketfire.y = y;
+		rocketfire.revive();
 	}
 	
 	public function vibrate(x:Float, y:Float, strength:Float):Void {
@@ -31,9 +66,13 @@ class Chicken extends FlxSprite {
 
 	public override function update():Void {
 		super.update();
+		rocketfire.x = x;
+		rocketfire.y = y;
+		rocketfire.update();
 	}
 
 	public override function draw():Void {
+		if (rocketfire.exists) rocketfire.draw();
 		super.draw();
 	}
 }

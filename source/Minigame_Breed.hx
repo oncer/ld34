@@ -4,11 +4,16 @@ import flixel.*;
 import flixel.util.*;
 import flixel.ui.FlxBar;
 
+enum BreedSubstate {
+	Breed;
+	TimeUp;
+	FlyZoom;
+}
+
 class Minigame_Breed implements Minigame {
 	private var state:PlayState;
 	private var thermoSlider:FlxSprite;
 	private var thermoInd:FlxSprite;
-	private var rocketfire:FlxSprite;
 
 	private var size:Float;
 	private var temperature:Float; // -1 . 0 . 1
@@ -20,7 +25,11 @@ class Minigame_Breed implements Minigame {
 	private var timer_gfxbg:FlxSprite;
 	private var timer_gfxfg:FlxSprite;
 	
-	private var substate:Int; // breeding | chicken flying away & zooming
+	private var substate:BreedSubstate;
+
+	private var zoomInitial:Float;
+	private var zoomTarget:Float;
+	private var finalEggSize:Float;
 
 	public function new():Void
 	{
@@ -32,7 +41,7 @@ class Minigame_Breed implements Minigame {
 		size = 1;
 		temperature = 0;
 		tchange = 0.05;
-		substate = 0;
+		substate = BreedSubstate.Breed;
 
 		FlxG.watch.add(this, "temperature");
 		FlxG.watch.add(this, "tchange");		
@@ -44,13 +53,6 @@ class Minigame_Breed implements Minigame {
 		thermoInd = new FlxSprite(240, 410, "assets/images/thermometer_indicator.png");
 		thermoInd.offset.x = 16;
 		thermoInd.origin.x = 16;
-		rocketfire = new FlxSprite();
-		rocketfire.offset.x = 16;
-		rocketfire.origin.x = 16;
-		rocketfire.loadGraphic("assets/images/rocketfire.png", true, 32, 48);
-		rocketfire.animation.add("fire", [0,1,2,3], 7, true);
-		rocketfire.animation.play("fire");
-		rocketfire.kill();
 		timer_gfxbg = new FlxSprite(380, 96, "assets/images/eggtimer.png");
 		timer_gfxbg.centerOrigin();
 		timer_gfxbg.centerOffsets(true);
@@ -60,7 +62,6 @@ class Minigame_Breed implements Minigame {
 		timer_gfxfg.centerOffsets(true);
 		state.add(thermoSlider);
 		state.add(thermoInd);
-		state.add(rocketfire);
 		state.add(timer_gfxbg);
 		state.add(timer_gfxfg);
 
@@ -77,7 +78,6 @@ class Minigame_Breed implements Minigame {
 	{
 		state.remove(thermoSlider);
 		state.remove(thermoInd);
-		state.remove(rocketfire);
 		state.remove(timer_gfxbg);
 		state.remove(timer_gfxfg);
 		timer.cancel();
@@ -86,8 +86,8 @@ class Minigame_Breed implements Minigame {
 
 	public function update():Void
 	{
-		if (substate == 0) {
-			var cur_chicken_y = 480 * Backdrop.HORIZON - state.egg.offset.y * state.egg.size;
+		if (substate == BreedSubstate.Breed) {
+			var cur_chicken_y = 480 * Backdrop.HORIZON - state.egg.offset.y * state.egg.size + 3;
 
 			temperature = Math.min(1, Math.max(-1, temperature + tchange));
 			if (temperature < -0.99 && FlxG.keys.pressed.SPACE) tchange = Math.max(0, tchange); //added keypress necessary --> slider can go all the way to the left
@@ -112,10 +112,9 @@ class Minigame_Breed implements Minigame {
 			timer_gfxfg.angle = 360 * timer.progress;
 			
 			if (timer.finished) {
-				substate = 1;
-				rocketfire.x = state.chicken.x;
-				rocketfire.y = state.chicken.y;
-				rocketfire.revive();
+				substate = BreedSubstate.TimeUp;
+				timer.start(1);
+				state.chicken.rocket();
 				FlxG.sound.play("assets/sounds/timer.wav");
 				FlxG.sound.play("assets/sounds/rocket.wav");
 				FlxG.sound.play("assets/sounds/hngh.wav");//bogogck
@@ -130,11 +129,24 @@ class Minigame_Breed implements Minigame {
 			}
 			else if (FlxG.keys.justReleased.SPACE) state.chicken.playAnimation("idle");
 
-		} else {
+		} else if (substate == BreedSubstate.TimeUp) {
+			if (timer.finished) {
+				substate = BreedSubstate.FlyZoom;
+				state.chicken.playAnimation("idle");
+				zoomInitial = state.bg.zoom;
+				finalEggSize = state.egg.size;
+				zoomTarget = 0.33 / finalEggSize;
+				timer.start(3);
+			}
+		} else if (substate == BreedSubstate.FlyZoom) {
 			//TODO fly
-			state.chicken.playAnimation("idle");
-			state.chicken.y -= 5;
-			rocketfire.y -= 5;
+			var f:Float = (timer.finished) ? 1.0 : timer.progress;
+			state.chicken.velocity.y = Math.max(-300, state.chicken.velocity.y - 1);
+			state.egg.size = finalEggSize + (0.33 - finalEggSize) * f;
+			state.bg.zoom = state.chicken.zoom = zoomInitial + (zoomTarget - zoomInitial) * f;
+			if (timer.finished) {
+				state.nextMinigame();
+			}
 			//TODO zoom at constant speed (get zoomtime from current eggscale~ scale 1.5 needs less time than scale 2.5)
 			//-- chicken getting smaller
 			//-- bg zoom

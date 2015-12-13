@@ -56,7 +56,7 @@ class Chicken extends FlxSprite {
 	
 	public function createIndividual(type:Int = -1) {
 		if (type < 0)
-			type = FlxRandom.intRanged(0, 17);
+			type = FlxRandom.intRanged(0, 21);
 		animation.destroyAnimations();
 		var offset = 6 * type;
 		animation.add("idle", [0+offset,1+offset], 7, true);

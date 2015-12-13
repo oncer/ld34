@@ -87,7 +87,7 @@ class Minigame_Breed implements Minigame {
 	public function update():Void
 	{
 		if (substate == BreedSubstate.Breed) {
-			var cur_chicken_y = 480 * Backdrop.HORIZON - state.egg.offset.y * state.egg.size;
+			var cur_chicken_y = 480 * Backdrop.HORIZON - state.egg.offset.y * state.egg.size + 3;
 
 			temperature = Math.min(1, Math.max(-1, temperature + tchange));
 			if (temperature < -0.99 && FlxG.keys.pressed.SPACE) tchange = Math.max(0, tchange); //added keypress necessary --> slider can go all the way to the left

@@ -8,7 +8,7 @@ import openfl.Assets;
 
 class Backdrop extends FlxGroup
 {
-	public static inline var HORIZON:Float = 1726/2048;
+	public static inline var HORIZON:Float = 1731/2048;
 	public var zoom:Float;
 	private var img:Array<FlxSprite>;
 

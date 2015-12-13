@@ -14,6 +14,8 @@ class Minigame_Breed implements Minigame {
 	private var state:PlayState;
 	private var thermoSlider:FlxSprite;
 	private var thermoInd:FlxSprite;
+	private var canCluck:Bool;
+	private var cluckTimer:FlxTimer;
 
 	private var size:Float;
 	private var temperature:Float; // -1 . 0 . 1
@@ -69,6 +71,9 @@ class Minigame_Breed implements Minigame {
 		state.chicken.y = 480 * Backdrop.HORIZON;
 
 		state.egg.size = 0.33;
+		
+		canCluck = true;
+		cluckTimer = new FlxTimer(0.25, function(t:FlxTimer) { canCluck = true; });
 	}
 
 	public function destroy():Void
@@ -81,6 +86,7 @@ class Minigame_Breed implements Minigame {
 		state.chicken.zoom = 1;
 		state.chicken.velocity.y = 0;
 		state.chicken.rocketOff();
+		cluckTimer.destroy();
 	}
 
 	public function update():Void
@@ -128,7 +134,11 @@ class Minigame_Breed implements Minigame {
 			
 			if (FlxG.keys.justPressed.SPACE) {
 				state.chicken.playAnimation("wiggle");
-				FlxG.sound.play("assets/sounds/wiggle.wav");
+				if (canCluck) {
+					FlxG.sound.play("assets/sounds/wiggle.wav");
+					canCluck = false;
+					cluckTimer.reset();
+				}
 			}
 			else if (FlxG.keys.justReleased.SPACE) state.chicken.playAnimation("idle");
 		} else if (substate == BreedSubstate.FlyZoom) {

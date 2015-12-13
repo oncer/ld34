@@ -22,8 +22,8 @@ class Minigame_Breed implements Minigame {
 
 	private var timer:FlxTimer; // egg timer
 	private var sndTimer:FlxTimer; // tick timer
-	private var timer_gfxbg:FlxSprite;
-	private var timer_gfxfg:FlxSprite;
+	private var timebar:FlxBar;
+	private var timeremaining:Float;
 	
 	private var substate:BreedSubstate;
 
@@ -43,23 +43,22 @@ class Minigame_Breed implements Minigame {
 		tchange = 0.05;
 		substate = BreedSubstate.Breed;
 
+		FlxG.watch.add(this, "temperature");
+		FlxG.watch.add(this, "tchange");		
+		FlxG.watch.add(this, "size");
+
 		thermoSlider = new FlxSprite(240, 440, "assets/images/thermometer.png");
 		thermoSlider.offset.x = 144;
 		thermoSlider.origin.x = 144;
 		thermoInd = new FlxSprite(240, 410, "assets/images/thermometer_indicator.png");
 		thermoInd.offset.x = 16;
 		thermoInd.origin.x = 16;
-		timer_gfxbg = new FlxSprite(380, 96, "assets/images/eggtimer.png");
-		timer_gfxbg.centerOrigin();
-		timer_gfxbg.centerOffsets(true);
-		timer_gfxfg = new FlxSprite(396, 128);
-		timer_gfxfg.loadRotatedGraphic("assets/images/eggtimer_indicator.png", 180); //180 precomputed rotations
-		timer_gfxfg.centerOrigin();
-		timer_gfxfg.centerOffsets(true);
+		timebar = new FlxBar(240 - 144, 420, FlxBar.FILL_HORIZONTAL_INSIDE_OUT, 288, 16, this, "timeremaining", 0, 1, false);
+		timebar.createImageBar(null, "assets/images/timebar.png", 0x00000000);
+		timeremaining = 1;
 		state.add(thermoSlider);
 		state.add(thermoInd);
-		state.add(timer_gfxbg);
-		state.add(timer_gfxfg);
+		state.add(timebar);
 
 		state.chicken.x = 240;
 		state.chicken.y = 480 * Backdrop.HORIZON;
@@ -74,8 +73,7 @@ class Minigame_Breed implements Minigame {
 	{
 		state.remove(thermoSlider);
 		state.remove(thermoInd);
-		state.remove(timer_gfxbg);
-		state.remove(timer_gfxfg);
+		state.remove(timebar);
 		timer.cancel();
 		sndTimer.cancel();
 		state.chicken.zoom = 1;
@@ -108,8 +106,7 @@ class Minigame_Breed implements Minigame {
 
 			thermoInd.x = temperature * 136 + 240;
 			
-			timer_gfxfg.angle = 360 * timer.progress;
-			
+			timeremaining = 1 - timer.progress;
 			if (timer.finished) {
 				substate = BreedSubstate.FlyZoom;
 				state.chicken.playAnimation("idle");
@@ -121,8 +118,7 @@ class Minigame_Breed implements Minigame {
 				FlxG.sound.play("assets/sounds/timer.wav");
 				FlxG.sound.play("assets/sounds/rocket.wav");
 				FlxG.sound.play("assets/sounds/hngh.wav");//bogogck
-				timer_gfxbg.kill();
-				timer_gfxfg.kill();
+				timebar.kill();
 				state.stars.setScore(1, (state.egg.size / 2.25) * (state.egg.size / 2.25)); // squared score
 			}
 			
@@ -134,7 +130,7 @@ class Minigame_Breed implements Minigame {
 		} else if (substate == BreedSubstate.FlyZoom) {
 			//TODO fly
 			var f:Float = (timer.finished) ? 1.0 : timer.progress;
-			state.chicken.velocity.y = Math.min(-200, Math.max(-1000, state.chicken.velocity.y - 1));
+			state.chicken.velocity.y = Math.max(-300, state.chicken.velocity.y - 1);
 			state.egg.size = finalEggSize + (0.33 - finalEggSize) * f;
 			state.bg.zoom = state.chicken.zoom = zoomInitial + (zoomTarget - zoomInitial) * f;
 			if (timer.finished) {

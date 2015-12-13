@@ -14,6 +14,8 @@ class Minigame_Breed implements Minigame {
 	private var state:PlayState;
 	private var thermoSlider:FlxSprite;
 	private var thermoInd:FlxSprite;
+	private var canCluck:Bool;
+	private var cluckTimer:FlxTimer;
 
 	private var size:Float;
 	private var temperature:Float; // -1 . 0 . 1
@@ -69,6 +71,9 @@ class Minigame_Breed implements Minigame {
 		state.chicken.y = 480 * Backdrop.HORIZON;
 
 		state.egg.size = 0.33;
+		
+		canCluck = true;
+		cluckTimer = new FlxTimer(0.25, function(t:FlxTimer) { canCluck = true; });
 	}
 
 	public function destroy():Void
@@ -81,6 +86,7 @@ class Minigame_Breed implements Minigame {
 		state.chicken.zoom = 1;
 		state.chicken.velocity.y = 0;
 		state.chicken.rocketOff();
+		cluckTimer.destroy();
 	}
 
 	public function update():Void
@@ -94,6 +100,7 @@ class Minigame_Breed implements Minigame {
 			temperature -= 0.03*(1.0 - temperature*temperature);
 
 			echange = Math.max(0, (1 - 2 * Math.abs(temperature))) * 0.004; //changed --> bad temperatures no growth
+			echange = echange * (state.egg.animation.frameIndex/2 * state.egg.animation.frameIndex/2 + 1) * 0.333;
 			state.egg.size += echange;
 
 			if (FlxG.keys.pressed.SPACE) {
@@ -122,12 +129,17 @@ class Minigame_Breed implements Minigame {
 				FlxG.sound.play("assets/sounds/rocket.wav");
 				FlxG.sound.play("assets/sounds/hngh.wav");//bogogck
 				timebar.kill();
-				state.stars.setScore(1, (state.egg.size / 2.25) * (state.egg.size / 2.25)); // squared score
+				state.stars.setScore(1, (state.egg.size / 1.55) * (state.egg.size / 1.55)); // squared score
 			}
 			
 			if (FlxG.keys.justPressed.SPACE) {
 				state.chicken.playAnimation("wiggle");
-				FlxG.sound.play("assets/sounds/wiggle.wav");
+				if (canCluck) {
+					var cluck = flixel.util.FlxRandom.intRanged(2, 4);
+					FlxG.sound.play(Sprintf.format("assets/sounds/cluck%02d.wav", [cluck]));
+					canCluck = false;
+					cluckTimer.reset();
+				}
 			}
 			else if (FlxG.keys.justReleased.SPACE) state.chicken.playAnimation("idle");
 		} else if (substate == BreedSubstate.FlyZoom) {

@@ -94,6 +94,7 @@ class Minigame_Breed implements Minigame {
 			temperature -= 0.03*(1.0 - temperature*temperature);
 
 			echange = Math.max(0, (1 - 2 * Math.abs(temperature))) * 0.004; //changed --> bad temperatures no growth
+			echange = echange * (state.egg.animation.frameIndex/2 * state.egg.animation.frameIndex/2 + 1) * 0.333;
 			state.egg.size += echange;
 
 			if (FlxG.keys.pressed.SPACE) {

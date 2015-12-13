@@ -164,6 +164,16 @@ class Minigame_Hatch implements Minigame {
 			particles.start(true, 1, 0, 0);
 			state.egg.kill();
 			cracks.kill();
+			
+			// lay chikken
+			var chicken_x = 480 * 0.5;
+			var chicken_start_y = 480 * Backdrop.HORIZON;
+			state.chicken.revive();
+			state.chicken.x = chicken_x;
+			state.chicken.y = chicken_start_y;
+			state.chicken.scale.x = 1;
+			state.chicken.scale.y = 1;
+			new FlxTimer(2, function(t:FlxTimer) { state.nextMinigame(); } );
 		}
 		
 	}

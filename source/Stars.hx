@@ -4,6 +4,7 @@ import flixel.*;
 using flixel.util.FlxSpriteUtil;
 import flixel.ui.FlxBar;
 import flixel.util.FlxTimer;
+import flixel.group.*;
 
 enum StarsState
 {
@@ -22,7 +23,7 @@ class Stars extends flixel.group.FlxGroup
 	private var timers:Array<FlxTimer>;
 	private var scores:Array<Float>;
 	private var values:Array<Float>;
-	private var totalscore:Int;
+	private var totalscore:Float;
 	private var scoretext:FlxBitmapFont;
 	private var additionscores:Array<Float>;
 	private var additionscore1_2:Float;
@@ -30,17 +31,21 @@ class Stars extends flixel.group.FlxGroup
 	private var addtext_x_offset:Float;
 	private var substate:StarsState;
 	private var timer:FlxTimer;
+	private var addresult:Float;
 
 	private var level:Int;
 
 	public var finished:Bool;
 
+	private var barsBG:FlxTypedGroup<FlxBar>;
+	private var barsFG:FlxTypedGroup<FlxBar>;
+
 	public function create(x:Float, y:Float):Void {
 		var star_w = 64;
 		var star_h = 64;
-		var dist = 16;
+		var dist = 6;
 		var total_w = star_w * 3 + dist * 2;
-		var start_x = star_w ; //x - total_w / 2;
+		var start_x = 56 ; //x - total_w / 2;
 		var start_y = 24 + star_h/2;
 		
 		bars = [new FlxBar(start_x, start_y, FlxBar.FILL_BOTTOM_TO_TOP, star_w, star_h, null, "", 0, 1, false),
@@ -51,19 +56,25 @@ class Stars extends flixel.group.FlxGroup
 		values = [0, 0, 0];
 		scores = [0, 0, 0];
 		
+		barsBG = new FlxTypedGroup<FlxBar>();
+		barsFG = new FlxTypedGroup<FlxBar>();
+
 		for (i in 0 ... bars.length) {
 			bars[i].createImageBar("assets/images/star_bg.png", "assets/images/star_fg.png");
 			bars[i].currentValue = 0;
 			bars[i].offset.set(bars[i].width/2, bars[i].height/2);
 			bars[i].origin.set(bars[i].width/2, bars[i].height/2);
-			add(bars[i]);
+			barsBG.add(bars[i]);
 			timers[i].active = false;
 		}
+
+		add(barsBG);
+		add(barsFG);
 		
 		totalscore = 0;
 		scoretext = new FlxBitmapFont("assets/images/numbers.png", 32, 48, "0123456789", 10);
-		scoretext.text = "0000";
-		scoretext.x = 320;
+		scoretext.text = "000000";
+		scoretext.x = 320 - 64;
 		scoretext.y = 32;
 		add(scoretext);
 
@@ -82,7 +93,9 @@ class Stars extends flixel.group.FlxGroup
 	}
 	
 	public function reset():Void {
+		barsFG.clear();
 		for (i in 0 ... bars.length) {
+			barsBG.add(bars[i]);
 			bars[i].currentValue = 0;
 			timers[i].cancel();
 		}
@@ -97,6 +110,7 @@ class Stars extends flixel.group.FlxGroup
 		}
 
 		addtext_x_offset = 0;
+		addresult = 0;
 
 		additionscores = [0, 0, 1];
 		finished = false;
@@ -107,8 +121,8 @@ class Stars extends flixel.group.FlxGroup
 	
 	public function setScore(i:Int, score:Float):Void
 	{
-		remove(bars[i]);
-		add(bars[i]);
+		barsBG.remove(bars[i]);
+		barsFG.add(bars[i]);
 		score = Math.min(1, Math.max(0, score)); // limit score to 0..1
 		scores[i] = score;
 		// scale for gfx, bc border counts to bar!
@@ -147,9 +161,9 @@ class Stars extends flixel.group.FlxGroup
 				}
 				if (timers[i].active) {
 					var a = timers[i].progress;
-					var s:Float = 0.6;
+					var s:Float = 1.0;
 					if (a < 0.2) {
-						s = 0.6 + a * 5;
+						s = 1.0 + a * 3;
 					} else {
 						s = 1.6;
 					}
@@ -185,12 +199,13 @@ class Stars extends flixel.group.FlxGroup
 				if (additionScoreText[0].exists && additionScoreText[1].exists && additionScoreText[2].exists
 					&& additionScoreText[2].alpha >= 1) {
 					substate = StarsState.FinalAdd;
+					addresult = Std.int(additionscores[0]) + Std.int(additionscores[1]);
 					timer.start(0.4);
 				}
 			}
 			var i:Int;
 			for (i in 0...additionScoreText.length) {
-				additionScoreText[i].text = "" + Std.int(additionscores[i] + 0.5);
+				additionScoreText[i].text = "" + Std.int(additionscores[i]);
 				additionScoreText[i].x = bars[i].x + 24 - additionScoreText[i].width;
 
 				if (additionScoreText[i].alpha < 1) {
@@ -213,11 +228,13 @@ class Stars extends flixel.group.FlxGroup
 					additionScoreText[0].x += (target_x - additionScoreText[0].x) * 0.1;
 				}
 				// update text #1 and #0
-				additionScoreText[0].text = "" + Std.int(additionscores[0] + 0.5);
+				additionScoreText[0].text = "" + Std.int(additionscores[0]);
 				additionScoreText[0].x = bars[0].x + 24 - additionScoreText[0].width;
-				additionScoreText[1].text = "" + Std.int(additionscores[1] + 0.5);
+				additionScoreText[1].text = "" + Std.int(additionscores[1]);
 				additionScoreText[1].x = bars[1].x + 24 - additionScoreText[1].width;
 			} else {
+				additionscores[1] = addresult;
+				addresult = Std.int(additionscores[1]) * Std.int(additionscores[2]);
 				substate = StarsState.FinalMultiply;
 				timer.start(0.4);
 				// save result of multiplying slot 1 and 2 in slot 0
@@ -233,7 +250,7 @@ class Stars extends flixel.group.FlxGroup
 					addtext_x_offset--;
 				}
 
-				if (Std.int(additionscores[2] + 0.5) > 1) {
+				if (Std.int(additionscores[2]) > 1) {
 					if (additionscores[0] > 0) {
 						additionscores[0]--;
 					} else {
@@ -245,16 +262,19 @@ class Stars extends flixel.group.FlxGroup
 				} else {
 					additionscores[2] = 0.9;
 				}
-
-				// update text #1 and #2
-				additionScoreText[1].text = "" + Std.int(additionscores[1] + 0.5);
-				additionScoreText[1].x = bars[1].x + 24 - additionScoreText[1].width + Std.int(addtext_x_offset/2);
-				additionScoreText[2].text = "" + Std.int(additionscores[2] + 0.5);
-				additionScoreText[2].x = bars[2].x + 24 - additionScoreText[2].width - Std.int(addtext_x_offset/2);
 			} else {
+				additionscores[1] = addresult;
+				addresult = Std.int(totalscore) + Std.int(additionscores[1]);
 				substate = StarsState.FinalMove;
 				timer.start(0.4);
 			}
+
+
+			// update text #1 and #2
+			additionScoreText[1].text = "" + Std.int(additionscores[1]);
+			additionScoreText[1].x = bars[1].x + 24 - additionScoreText[1].width + Std.int(addtext_x_offset/2);
+			additionScoreText[2].text = "" + Std.int(additionscores[2]);
+			additionScoreText[2].x = bars[2].x + 24 - additionScoreText[2].width - Std.int(addtext_x_offset/2);
 		} else if (substate == StarsState.FinalMove) {
 			// fade out text #2
 			additionScoreText[2].alpha = Math.max(0, additionScoreText[2].alpha - 0.05);
@@ -269,9 +289,10 @@ class Stars extends flixel.group.FlxGroup
 		} else if (substate == StarsState.TotalAdd) {
 			if (additionscores[1] > 0) {
 				var transfer:Float = Math.min(additionscores[1], Math.max(1, additionscores[1] * 0.02));
-				totalscore += Std.int(transfer);
+				totalscore += transfer;
 				additionscores[1] -= transfer;
 			} else {
+				totalscore = addresult;
 				// fade text #1 out
 				additionScoreText[1].alpha = Math.max(0, additionScoreText[1].alpha - 0.05);
 				//var target_y:Float = scoretext.y;
@@ -285,9 +306,9 @@ class Stars extends flixel.group.FlxGroup
 			}				
 
 			// update total score text and text #1
-			additionScoreText[1].text = "" + Std.int(additionscores[1] + 0.5);
+			additionScoreText[1].text = "" + Std.int(additionscores[1]);
 			additionScoreText[1].x = scoretext.x + scoretext.width - additionScoreText[1].width;
-			scoretext.text = Sprintf.format("%04d", [totalscore]);
+			scoretext.text = Sprintf.format("%06d", [Std.int(totalscore)]);
 		}
 	}
 	
@@ -302,6 +323,6 @@ class Stars extends flixel.group.FlxGroup
 			sum += scores[i];
 		}
 		totalscore += Math.floor(1 * 100/3 * sum); //level * percent
-		scoretext.text = Sprintf.format("%04d", [totalscore]);
+		scoretext.text = Sprintf.format("%06d", [totalscore]);
 	}
 }

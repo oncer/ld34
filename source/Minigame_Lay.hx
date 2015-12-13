@@ -105,7 +105,7 @@ class Minigame_Lay implements Minigame {
 				// HNGGGH
 				FlxG.sound.play("assets/sounds/hngh.wav");
 				
-				state.stars.setValue(0, power / 128);
+				state.stars.setScore(0, (power / 128) * (power / 128)); // squared score
 			}
 			else 
 			{

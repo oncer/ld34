@@ -51,6 +51,8 @@ class PlayState extends FlxState
 
 		currentMinigame = -1;
 		nextMinigame();
+		
+		FlxG.sound.playMusic("assets/music/bgm.wav", 1, true);
 	}
 
 	public function nextMinigame():Void

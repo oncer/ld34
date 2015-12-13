@@ -48,7 +48,7 @@ class Minigame_Breed implements Minigame {
 		FlxG.watch.add(this, "size");
 		
 		timer = new FlxTimer(10); // 10 seconds?!
-		sndTimer = new FlxTimer(1, function(t:FlxTimer) { FlxG.sound.play("assets/sounds/tick.wav"); }, 9);
+		sndTimer = new FlxTimer(0.5, function(t:FlxTimer) { FlxG.sound.play("assets/sounds/tick.wav"); }, 19);
 
 		thermoSlider = new FlxSprite(240, 440, "assets/images/thermometer.png");
 		thermoSlider.offset.x = 144;

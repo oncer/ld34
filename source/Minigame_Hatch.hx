@@ -16,6 +16,11 @@ class Minigame_Hatch implements Minigame {
 	private var circle:FlxSprite;
 	private var iter:Int;
 	private var score:Float;
+	
+	private var rotateStrength:Float;
+	private var rotateTime:Float;
+	
+	private var cracks:FlxSprite;
 
 	public function new():Void
 	{
@@ -31,6 +36,14 @@ class Minigame_Hatch implements Minigame {
 		
 		state.add(goal); goal.kill();
 		state.add(circle); circle.kill();
+		
+		cracks = new FlxSprite();
+		cracks.loadGraphic("assets/images/crack.png", true, 96, 96);
+		cracks.animation.add("crack", [0, 1, 2], 0, false);
+		cracks.animation.frameIndex = 0;
+		state.add(cracks);
+		cracks.offset.set(state.egg.offset.x, state.egg.offset.y);
+		cracks.origin.set(state.egg.origin.x, state.egg.origin.y);
 	}
 	public function init():Void
 	{
@@ -49,6 +62,16 @@ class Minigame_Hatch implements Minigame {
 		
 		goal.revive();
 		circle.revive();
+		cracks.revive();
+		
+		cracks.scale.set(state.egg.scale.x, state.egg.scale.y);
+		cracks.x = state.egg.x;
+		cracks.y = state.egg.y;
+		cracks.animation.frameIndex = 0;
+		
+		rotateStrength = 0;
+		rotateTime = 0;
+	
 		// Debug
 		state.egg.revive();
 		state.chicken.kill();
@@ -57,14 +80,16 @@ class Minigame_Hatch implements Minigame {
 	public function destroy():Void
 	{
 		goal.kill();
-		circle.kill();		
+		circle.kill();	
+		cracks.kill();
+		state.egg.angle = 0;
 	}
 
 	public function update():Void
 	{
 		var p = timer.progress;
-		var s = (1 - p) * 1.25 + 0.75; //circle scale: 2 ... 0.1
-		var max_alpha_pos = 1 - (1 - 0.75) / 1.25;
+		var s = (1 - p) * 2.25 + 0.75; //circle scale: 2 ... 0.1
+		var max_alpha_pos = 1 - (1 - 0.75) / 2.25;
 		var line_d = 1 / (1 - max_alpha_pos);
 		var a = 0.0;
 		if (p < max_alpha_pos)
@@ -77,13 +102,27 @@ class Minigame_Hatch implements Minigame {
 
 		if (FlxG.keys.justPressed.SPACE) {
 			timer.complete(timer);
-			score += a/3;
+			score += a / 3;
+			rotateStrength = score;
 		}
+		
+		rotateTime += rotateStrength;
+		var r = Math.sin(rotateTime * 0.85);
+		state.egg.angle = r * rotateStrength * 15;
+		
+		state.egg.vibrate(240, 480 * Backdrop.HORIZON, 3 * rotateStrength);
+		
+		
+		cracks.angle = state.egg.angle;
+		cracks.x = state.egg.x;
+		cracks.y = state.egg.y;
 	}
 	
 	public function timerFinished(FlxTimer):Void {
 		trace ("Timer iteration finished: " + iter);
+		
 		++iter;
+		cracks.animation.frameIndex = Std.int(Math.min(2, iter));
 		if (iter < 3) {
 			// Start next iteration
 			timer.reset();
@@ -93,6 +132,8 @@ class Minigame_Hatch implements Minigame {
 			// ...
 			state.stars.setScore(2, Math.sqrt(score * 1.5)); // sqrt score bc hard *1.5 to help
 			//state.stars.finalScore();
+			goal.kill();
+			circle.kill();	
 		}
 		
 	}

@@ -56,7 +56,7 @@ class Minigame_Hatch implements Minigame {
 	public function destroy():Void
 	{
 		goal.kill();
-		circle.kill();		
+		circle.kill();
 	}
 
 	public function update():Void

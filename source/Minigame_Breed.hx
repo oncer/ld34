@@ -6,7 +6,7 @@ import flixel.ui.FlxBar;
 
 enum BreedSubstate {
 	Breed;
-	TimeUp;
+	//TimeUp;
 	FlyZoom;
 }
 
@@ -43,10 +43,6 @@ class Minigame_Breed implements Minigame {
 		tchange = 0.05;
 		substate = BreedSubstate.Breed;
 
-		FlxG.watch.add(this, "temperature");
-		FlxG.watch.add(this, "tchange");		
-		FlxG.watch.add(this, "size");
-
 		thermoSlider = new FlxSprite(240, 440, "assets/images/thermometer.png");
 		thermoSlider.offset.x = 144;
 		thermoSlider.origin.x = 144;
@@ -82,6 +78,9 @@ class Minigame_Breed implements Minigame {
 		state.remove(timer_gfxfg);
 		timer.cancel();
 		sndTimer.cancel();
+		state.chicken.zoom = 1;
+		state.chicken.velocity.y = 0;
+		state.chicken.rocketOff();
 	}
 
 	public function update():Void
@@ -112,8 +111,12 @@ class Minigame_Breed implements Minigame {
 			timer_gfxfg.angle = 360 * timer.progress;
 			
 			if (timer.finished) {
-				substate = BreedSubstate.TimeUp;
-				timer.start(1);
+				substate = BreedSubstate.FlyZoom;
+				state.chicken.playAnimation("idle");
+				zoomInitial = state.bg.zoom;
+				finalEggSize = state.egg.size;
+				zoomTarget = 0.33 / finalEggSize;
+				timer.start(3);
 				state.chicken.rocket();
 				FlxG.sound.play("assets/sounds/timer.wav");
 				FlxG.sound.play("assets/sounds/rocket.wav");
@@ -128,20 +131,10 @@ class Minigame_Breed implements Minigame {
 				FlxG.sound.play("assets/sounds/wiggle.wav");
 			}
 			else if (FlxG.keys.justReleased.SPACE) state.chicken.playAnimation("idle");
-
-		} else if (substate == BreedSubstate.TimeUp) {
-			if (timer.finished) {
-				substate = BreedSubstate.FlyZoom;
-				state.chicken.playAnimation("idle");
-				zoomInitial = state.bg.zoom;
-				finalEggSize = state.egg.size;
-				zoomTarget = 0.33 / finalEggSize;
-				timer.start(3);
-			}
 		} else if (substate == BreedSubstate.FlyZoom) {
 			//TODO fly
 			var f:Float = (timer.finished) ? 1.0 : timer.progress;
-			state.chicken.velocity.y = Math.max(-300, state.chicken.velocity.y - 1);
+			state.chicken.velocity.y = Math.min(-200, Math.max(-1000, state.chicken.velocity.y - 1));
 			state.egg.size = finalEggSize + (0.33 - finalEggSize) * f;
 			state.bg.zoom = state.chicken.zoom = zoomInitial + (zoomTarget - zoomInitial) * f;
 			if (timer.finished) {

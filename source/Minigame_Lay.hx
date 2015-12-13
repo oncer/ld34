@@ -55,6 +55,7 @@ class Minigame_Lay implements Minigame {
 
 	public function init():Void
 	{
+		state.stars.reset();
 		//Reset vars, chicken & egg position, visibilities, state
 		power = 0;
 		time = 0;
@@ -78,7 +79,7 @@ class Minigame_Lay implements Minigame {
 			if (FlxG.keys.justPressed.SPACE)
 			{
 				substate = LaySubstate.Prepare;
-				trace("PooPower: " + power);
+				//trace("PooPower: " + power);
 				
 				
 				if (power > 122) // round up
@@ -88,6 +89,14 @@ class Minigame_Lay implements Minigame {
 				else
 					powerbar_best.visible = false;
 				powerbar.currentValue = power;
+
+				// Set egg color
+				var eggtype = 0;
+				if (power >  100)
+					eggtype = 1;
+				if (power >= 127)
+					eggtype = 2;
+				state.egg.animation.frameIndex = eggtype;
 	
 				// Start timer for prepare duration
 				timer.start(dur_prepare, this.layEgg);
@@ -95,6 +104,8 @@ class Minigame_Lay implements Minigame {
 				
 				// HNGGGH
 				FlxG.sound.play("assets/sounds/hngh.wav");
+				
+				state.stars.setScore(0, (power / 128) * (power / 128)); // squared score
 			}
 			else 
 			{

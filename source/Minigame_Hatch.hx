@@ -84,6 +84,12 @@ class Minigame_Hatch implements Minigame {
 		particles.x = state.egg.x - state.egg.width / 2 * state.egg.scale.x * 0.5;
 		particles.y = state.egg.y - state.egg.height * state.egg.scale.y * 0.75 * 1.1;
 		particles.setSize(Std.int(state.egg.width* state.egg.scale.x * 0.5), Std.int(state.egg.height* state.egg.scale.y * 0.75));
+
+		var particle:FlxParticle;
+        for (particle in particles.members) {
+        	particle.x = particles.x + Math.cos(Math.random()) * particles.width;
+        	particle.y = particles.y + Math.sin(Math.random()) * particles.height;
+        }
 		
 		rotateStrength = 0;
 		rotateTime = 0;

@@ -66,8 +66,8 @@ class Minigame_Lay implements Minigame {
 		state.chicken.y = chicken_start_y;
 		chicken_end_y = state.egg.y - state.egg.offset.y * 0.33;
 		powerbar.revive();
-		powerbar_best.revive();
 		powerbar_best.visible = false;
+		powerbar_best.revive();
 	}
 
 	public function update():Void
@@ -79,6 +79,15 @@ class Minigame_Lay implements Minigame {
 			{
 				substate = LaySubstate.Prepare;
 				trace("PooPower: " + power);
+				
+				
+				if (power > 122) // round up
+					power = 128;
+				if (power >= 127) // visualize perfect score
+					powerbar_best.visible = true;
+				else
+					powerbar_best.visible = false;
+				powerbar.currentValue = power;
 	
 				// Start timer for prepare duration
 				timer.start(dur_prepare, this.layEgg);
@@ -102,15 +111,16 @@ class Minigame_Lay implements Minigame {
 				//	powerbar_sound_canplay = true;
 				time += power_dt;
 				power = 1 - Math.abs(Math.sin(time)); // Fast at top
-				power = power * 128;
+				power = Math.round(power * 128);
 				//trace (power);
 				
-				if (power > 123) // round up
+				if (power > 122) // round up
 					power = 128;
-				if (power >= 127 && !powerbar_best.visible) // visualize perfect score
+				if (power >= 127) // visualize perfect score
 					powerbar_best.visible = true;
-				else if (powerbar_best.visible)
+				else
 					powerbar_best.visible = false;
+				powerbar.currentValue = power;
 			}
 		}
 		else if (substate == LaySubstate.Prepare)

@@ -63,6 +63,7 @@ class Minigame_Lay implements Minigame {
 		state.egg.x = 240;
 		state.egg.y = 480 * Backdrop.HORIZON;
 		state.egg.kill();
+		state.chicken.revive();
 		state.chicken.x = chicken_x;
 		state.chicken.y = chicken_start_y;
 		chicken_end_y = state.egg.y - state.egg.offset.y * 0.33;

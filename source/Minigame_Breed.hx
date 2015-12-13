@@ -16,6 +16,7 @@ class Minigame_Breed implements Minigame {
 	private var echange:Float; // egg size change
 
 	private var timer:FlxTimer; // egg timer
+	private var sndTimer:FlxTimer; // tick timer
 	private var timer_gfxbg:FlxSprite;
 	private var timer_gfxfg:FlxSprite;
 	
@@ -69,7 +70,7 @@ class Minigame_Breed implements Minigame {
 		state.egg.size = 0.33;
 
 		timer = new FlxTimer(10); // 10 seconds?!
-		new FlxTimer(1, function(t:FlxTimer) { FlxG.sound.play("assets/sounds/tick.wav"); }, 9);
+		sndTimer = new FlxTimer(1, function(t:FlxTimer) { FlxG.sound.play("assets/sounds/tick.wav"); }, 9);
 	}
 
 	public function destroy():Void
@@ -79,6 +80,8 @@ class Minigame_Breed implements Minigame {
 		state.remove(rocketfire);
 		state.remove(timer_gfxbg);
 		state.remove(timer_gfxfg);
+		timer.cancel();
+		sndTimer.cancel();
 	}
 
 	public function update():Void

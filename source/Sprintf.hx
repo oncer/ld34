@@ -70,7 +70,7 @@
 
 */
 
-package chx.text;
+package ;
 
 /**
 * This is an Haxe version of the sprintf function, as based

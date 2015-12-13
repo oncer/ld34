@@ -2,9 +2,13 @@ package;
 
 import flixel.*;
 using flixel.util.FlxSpriteUtil;
+import flixel.group.*;
+import flixel.util.*;
 
 class Egg extends flixel.FlxSprite
 {
+	public static inline var SIZE_LAY = 0.33;
+	public static inline var SIZE_HATCH = 0.75;
 	public var size(get, set):Float;
 	public function get_size():Float {
 		return scale.x;
@@ -19,7 +23,10 @@ class Egg extends flixel.FlxSprite
 		animation.add("types", [0, 1, 2], 0, false);
 		origin.set(width/2, height);
 		offset.set(origin.x, origin.y);
-
-		//animation.add("idle", [0, 1, 2, 3], 10, true);
+	}
+	
+	public function vibrate(x:Float, y:Float, strength:Float):Void {
+		this.x = Std.int(x + strength * FlxRandom.float());
+		this.y = Std.int(y + strength * FlxRandom.float());
 	}
 }

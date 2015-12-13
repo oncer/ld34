@@ -135,7 +135,8 @@ class Minigame_Breed implements Minigame {
 			if (FlxG.keys.justPressed.SPACE) {
 				state.chicken.playAnimation("wiggle");
 				if (canCluck) {
-					FlxG.sound.play("assets/sounds/wiggle.wav");
+					var cluck = flixel.util.FlxRandom.intRanged(2, 4);
+					FlxG.sound.play(Sprintf.format("assets/sounds/cluck%02d.wav", [cluck]));
 					canCluck = false;
 					cluckTimer.reset();
 				}

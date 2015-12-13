@@ -117,7 +117,7 @@ class Minigame_Breed implements Minigame {
 				finalEggSize = state.egg.size;
 				zoomTargetChicken = Egg.SIZE_HATCH / finalEggSize;
 				zoomTargetBG = state.bg.zoom * Egg.SIZE_HATCH / finalEggSize;
-				timer.start(3);
+				timer.start(1.5);
 				state.chicken.rocket();
 				FlxG.sound.play("assets/sounds/timer.wav");
 				FlxG.sound.play("assets/sounds/rocket.wav");
@@ -141,12 +141,6 @@ class Minigame_Breed implements Minigame {
 			if (timer.finished) {
 				state.nextMinigame();
 			}
-			//TODO zoom at constant speed (get zoomtime from current eggscale~ scale 1.5 needs less time than scale 2.5)
-			//-- chicken getting smaller
-			//-- bg zoom
-			//TODO after zoom:
-			//-- kill() chicken
-			//-- state.nextMinigame();
 		}
 
 	}

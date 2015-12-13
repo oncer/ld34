@@ -71,6 +71,7 @@ class Minigame_Hatch implements Minigame {
 		goal.y = state.egg.y - (state.egg.height*0.5) * state.egg.scale.y;
 		circle.x = goal.x;
 		circle.y = goal.y;
+		goal.alpha = 0;
 		
 		goal.revive();
 		circle.revive();
@@ -110,6 +111,10 @@ class Minigame_Hatch implements Minigame {
 
 	public function update():Void
 	{
+		if (goal.alpha < 1) {
+			goal.alpha = Math.min(1, goal.alpha + 0.0125);
+		}
+
 		var p = timer.progress;
 		var s = (1 - p) * 2.25 + 0.75; //circle scale: 2 ... 0.1
 		var max_alpha_pos = 1 - (1 - 0.75) / 2.25;
@@ -143,6 +148,10 @@ class Minigame_Hatch implements Minigame {
 		cracks.y = state.egg.y;
 		cracks.scale.x = state.egg.scale.x;
 		cracks.scale.y = state.egg.scale.y;
+
+		if (state.stars.finished) {
+			state.nextMinigame();
+		}
 	}
 	
 	public function timerFinished(FlxTimer):Void {
@@ -173,7 +182,6 @@ class Minigame_Hatch implements Minigame {
 			state.chicken.y = chicken_start_y;
 			state.chicken.scale.x = 1;
 			state.chicken.scale.y = 1;
-			new FlxTimer(2, function(t:FlxTimer) { state.nextMinigame(); } );
 		}
 		
 	}

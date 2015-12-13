@@ -26,11 +26,8 @@ class Chicken extends FlxSprite {
 	}
 
 	public function create():Void {
-		loadGraphic("assets/images/chicken01.png", true, 64, 64);
-		animation.add("idle", [0,1], 7, true);
-		animation.add("prepare", [2], 0, false);
-		animation.add("poop", [3], 0, false);
-		animation.add("wiggle", [4, 5], 10, true);
+		loadGraphic("assets/images/chicksheet.png", true, 64, 64);
+		createIndividual(1);
 		animation.play("idle");
 		offset = new FlxPoint(32, height);
 		origin = offset;
@@ -54,6 +51,17 @@ class Chicken extends FlxSprite {
 		explosion.kill();
 
 		zoom = 1;
+	}
+	
+	public function createIndividual(type:Int = -1) {
+		if (type < 0)
+			type = FlxRandom.intRanged(0, 8);
+		animation.destroyAnimations();
+		var offset = 6 * type;
+		animation.add("idle", [0+offset,1+offset], 7, true);
+		animation.add("prepare", [2+offset], 0, false);
+		animation.add("poop", [3+offset], 0, false);
+		animation.add("wiggle", [4+offset, 5+offset], 10, true);
 	}
 
 	public function rocket():Void

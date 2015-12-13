@@ -38,12 +38,12 @@ class Minigame_Hatch implements Minigame {
 		iter = 0;
 		score = 0;
 		
-		state.egg.set_size(0.33);
+		state.egg.set_size(Egg.SIZE_HATCH);
 		state.egg.x = 240;
 		state.egg.y = 480 * Backdrop.HORIZON;
 		
 		goal.x = state.egg.x;
-		goal.y = state.egg.y - 16;
+		goal.y = state.egg.y - (state.egg.height*0.5) * state.egg.scale.y;
 		circle.x = goal.x;
 		circle.y = goal.y;
 		

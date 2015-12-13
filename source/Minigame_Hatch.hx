@@ -2,6 +2,7 @@ package;
 
 import flixel.*;
 import flixel.util.FlxTimer;
+import flixel.effects.particles.*;
 
 enum HatchSubstate {
 	ZoomAway;
@@ -21,6 +22,7 @@ class Minigame_Hatch implements Minigame {
 	private var rotateTime:Float;
 	
 	private var cracks:FlxSprite;
+	private var particles:FlxEmitter;
 
 	public function new():Void
 	{
@@ -44,6 +46,16 @@ class Minigame_Hatch implements Minigame {
 		state.add(cracks);
 		cracks.offset.set(state.egg.offset.x, state.egg.offset.y);
 		cracks.origin.set(state.egg.origin.x, state.egg.origin.y);
+		
+		particles=new FlxEmitter();
+        particles.makeParticles("assets/images/egg01_particles.png", 200, 16, true, 0);
+        particles.setRotation(0, 360);
+        particles.setYSpeed(-300, 150);
+        particles.setXSpeed( -150, 150);
+		particles.setAlpha(1, 1, 0, 0);
+		particles.setScale(0.8, 2.5, 0, 0.2);
+        particles.gravity = 300;
+		state.add(particles);
 	}
 	public function init():Void
 	{
@@ -69,6 +81,10 @@ class Minigame_Hatch implements Minigame {
 		cracks.y = state.egg.y;
 		cracks.animation.frameIndex = 0;
 		
+		particles.x = state.egg.x - state.egg.width / 2 * state.egg.scale.x * 0.5;
+		particles.y = state.egg.y - state.egg.height * state.egg.scale.y * 0.75 * 1.1;
+		particles.setSize(Std.int(state.egg.width* state.egg.scale.x * 0.5), Std.int(state.egg.height* state.egg.scale.y * 0.75));
+		
 		rotateStrength = 0;
 		rotateTime = 0;
 	
@@ -83,6 +99,7 @@ class Minigame_Hatch implements Minigame {
 		circle.kill();	
 		cracks.kill();
 		state.egg.angle = 0;
+		timer.cancel();
 	}
 
 	public function update():Void
@@ -100,10 +117,12 @@ class Minigame_Hatch implements Minigame {
 		circle.scale.y = s;
 		circle.alpha = a;
 
-		if (FlxG.keys.justPressed.SPACE) {
+		if (FlxG.keys.justPressed.SPACE && iter < 2) {
 			timer.complete(timer);
 			score += a / 3;
 			rotateStrength = score;
+			//FlxG.cameras.flash(0xbfffffff, 0.5, null, true);
+			state.egg.pulse(a * a);
 		}
 		
 		rotateTime += rotateStrength;
@@ -116,6 +135,8 @@ class Minigame_Hatch implements Minigame {
 		cracks.angle = state.egg.angle;
 		cracks.x = state.egg.x;
 		cracks.y = state.egg.y;
+		cracks.scale.x = state.egg.scale.x;
+		cracks.scale.y = state.egg.scale.y;
 	}
 	
 	public function timerFinished(FlxTimer):Void {
@@ -134,6 +155,9 @@ class Minigame_Hatch implements Minigame {
 			//state.stars.finalScore();
 			goal.kill();
 			circle.kill();	
+			particles.start(true, 1, 0, 0);
+			state.egg.kill();
+			cracks.kill();
 		}
 		
 	}

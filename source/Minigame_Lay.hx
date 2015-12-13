@@ -66,7 +66,7 @@ class Minigame_Lay implements Minigame {
 		state.chicken.revive();
 		state.chicken.x = chicken_x;
 		state.chicken.y = chicken_start_y;
-		chicken_end_y = state.egg.y - state.egg.offset.y * 0.33 + 3;
+		chicken_end_y = state.egg.y - state.egg.offset.y * Egg.SIZE_LAY + 3;
 		powerbar.revive();
 		powerbar_best.visible = false;
 		powerbar_best.revive();
@@ -162,7 +162,7 @@ class Minigame_Lay implements Minigame {
 		
 		// Show egg at initial small scale
 		state.egg.revive();
-		state.egg.size = 0.33;
+		state.egg.size = Egg.SIZE_LAY;
 	}
 	
 	private function layEggDone(Timer:FlxTimer):Void

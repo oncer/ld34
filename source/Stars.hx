@@ -56,8 +56,10 @@ class Stars extends flixel.group.FlxGroup
 		prevvalues = [0, 0, 0];
 	}
 	
-	public function setScore(i:Int, score:Float):Void {
-		
+	public function setScore(i:Int, score:Float):Void
+	{
+		remove(bars[i]);
+		add(bars[i]);
 		score = Math.min(1, Math.max(0, score)); // limit score to 0..1
 		scores[i] = score;
 		// scale for gfx, bc border counts to bar!
@@ -80,7 +82,20 @@ class Stars extends flixel.group.FlxGroup
 			}
 			if (timers[i].active) {
 				var a = timers[i].progress;
+				var s:Float = 0.6;
+				if (a < 0.2) {
+					s = 0.6 + a * 5;
+				} else {
+					s = 1.6;
+				}
+				bars[i].scale.set(s, s);
 				bars[i].currentValue = (1 - a) * prevvalues[i] + a * values[i];
+			} else {
+				var s:Float = bars[i].scale.x;
+				if (s > 1) {
+					s = Math.max(1, s - 0.03);
+					bars[i].scale.set(s, s);
+				}
 			}
 		}
 	}

@@ -5,8 +5,6 @@ using flixel.util.FlxSpriteUtil;
 
 class Egg extends flixel.FlxSprite
 {
-	public var zoom:Float;
-
 	public var size(get, set):Float;
 	public function get_size():Float {
 		return scale.x;
@@ -17,10 +15,11 @@ class Egg extends flixel.FlxSprite
 	}
 
 	public function create():Void {
-		loadGraphic("assets/images/egg01.png", true, 96, 96);
-		animation.add("types", [0, 1, 2], 0, false);
-		origin.x = 48;
+		loadGraphic("assets/images/egg01.png");
+		origin.x = width / 2;
 		origin.y = height - 2;
 		offset = origin;
+
+		//animation.add("idle", [0, 1, 2, 3], 10, true);
 	}
 }

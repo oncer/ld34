@@ -8,7 +8,21 @@ class Chicken extends FlxSprite {
 
 	private var rocketfire:FlxSprite;
 
-	public var zoom:Float;
+	private var _zoom:Float = 1;
+	public var zoom(get,set):Float;
+	public function set_zoom(Value:Float):Float
+	{
+		var scaleOriginY:Float = 480 * Backdrop.HORIZON;
+		y = scaleOriginY + (y - scaleOriginY) * Value/_zoom;
+		_zoom = Value;
+		scale.set(Value, Value);
+		rocketfire.scale.set(scale.x, scale.y);
+		return Value;
+	}
+
+	public function get_zoom():Float {
+		return _zoom;
+	}
 
 	public function create():Void {
 		loadGraphic("assets/images/chicken01.png", true, 64, 64);
@@ -24,11 +38,11 @@ class Chicken extends FlxSprite {
 		facing = FlxObject.RIGHT;
 
 		rocketfire = new FlxSprite();
-		rocketfire.offset.x = 16;
-		rocketfire.origin.x = 16;
 		rocketfire.loadGraphic("assets/images/rocketfire.png", true, 32, 48);
 		rocketfire.animation.add("fire", [0,1,2,3], 7, true);
 		rocketfire.animation.play("fire");
+		rocketfire.offset.set(16, 0);
+		rocketfire.origin.set(16, 0);
 		rocketfire.kill();
 
 		zoom = 1;

@@ -26,6 +26,10 @@ class Minigame_Breed implements Minigame {
 	
 	private var substate:BreedSubstate;
 
+	private var zoomInitial:Float;
+	private var zoomTarget:Float;
+	private var finalEggSize:Float;
+
 	public function new():Void
 	{
 		state = cast(FlxG.state, PlayState);
@@ -126,10 +130,20 @@ class Minigame_Breed implements Minigame {
 			if (timer.finished) {
 				substate = BreedSubstate.FlyZoom;
 				state.chicken.playAnimation("idle");
+				zoomInitial = state.bg.zoom;
+				finalEggSize = state.egg.size;
+				zoomTarget = 0.33 / finalEggSize;
+				timer.start(3);
 			}
 		} else if (substate == BreedSubstate.FlyZoom) {
 			//TODO fly
-			state.chicken.velocity.y = Math.min(-1, state.chicken.velocity.y - 0.03);
+			var f:Float = (timer.finished) ? 1.0 : timer.progress;
+			state.chicken.velocity.y = Math.max(-300, state.chicken.velocity.y - 1);
+			state.egg.size = finalEggSize + (0.33 - finalEggSize) * f;
+			state.bg.zoom = state.chicken.zoom = zoomInitial + (zoomTarget - zoomInitial) * f;
+			if (timer.finished) {
+				state.nextMinigame();
+			}
 			//TODO zoom at constant speed (get zoomtime from current eggscale~ scale 1.5 needs less time than scale 2.5)
 			//-- chicken getting smaller
 			//-- bg zoom

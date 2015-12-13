@@ -15,11 +15,10 @@ class Egg extends flixel.FlxSprite
 	}
 
 	public function create():Void {
-		loadGraphic("assets/images/egg01.png");
-		origin.x = width / 2;
+		loadGraphic("assets/images/egg01.png", true, 64, 64);
+		animation.add("types", [0, 1, 2], 0, false);
+		origin.x = 32;
 		origin.y = height - 2;
 		offset = origin;
-
-		//animation.add("idle", [0, 1, 2, 3], 10, true);
 	}
 }

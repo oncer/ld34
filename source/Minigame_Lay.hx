@@ -88,6 +88,14 @@ class Minigame_Lay implements Minigame {
 				else
 					powerbar_best.visible = false;
 				powerbar.currentValue = power;
+
+				// Set egg color
+				eggtype = 0;
+				if (power >  100)
+					eggtype = 1;
+				else if (power >= 127)
+					eggtype = 2;
+				state.egg.animation.frameIndex = eggtype;
 	
 				// Start timer for prepare duration
 				timer.start(dur_prepare, this.layEgg);

@@ -29,8 +29,8 @@ class Minigame_Breed implements Minigame {
 	public function init():Void
 	{
 		size = 1;
-		temperature = 0.5;
-		tchange = 0.001;
+		temperature = 0;
+		tchange = 0.05;
 		substate = 0;
 
 		FlxG.watch.add(this, "temperature");
@@ -69,6 +69,7 @@ class Minigame_Breed implements Minigame {
 		state.egg.size = 0.33;
 
 		timer = new FlxTimer(10); // 10 seconds?!
+		new FlxTimer(1, function(t:FlxTimer) { FlxG.sound.play("assets/sounds/tick.wav"); }, 9);
 	}
 
 	public function destroy():Void
@@ -90,7 +91,7 @@ class Minigame_Breed implements Minigame {
 			if (temperature > 0.99 && !FlxG.keys.pressed.SPACE) tchange = Math.min(0, tchange); //.. same for other side
 			temperature -= 0.03*(1.0 - temperature*temperature);
 
-			echange = Math.max(0, (1 - 2 * Math.abs(temperature))) * 0.003; //changed --> bad temperatures no growth
+			echange = Math.max(0, (1 - 2 * Math.abs(temperature))) * 0.004; //changed --> bad temperatures no growth
 			state.egg.size += echange;
 
 			if (FlxG.keys.pressed.SPACE) {
@@ -112,13 +113,17 @@ class Minigame_Breed implements Minigame {
 				rocketfire.x = state.chicken.x;
 				rocketfire.y = state.chicken.y;
 				rocketfire.revive();
+				FlxG.sound.play("assets/sounds/timer.wav");
 				FlxG.sound.play("assets/sounds/rocket.wav");
 				FlxG.sound.play("assets/sounds/hngh.wav");//bogogck
 				timer_gfxbg.kill();
 				timer_gfxfg.kill();
 			}
 			
-			if (FlxG.keys.justPressed.SPACE) state.chicken.playAnimation("wiggle");
+			if (FlxG.keys.justPressed.SPACE) {
+				state.chicken.playAnimation("wiggle");
+				FlxG.sound.play("assets/sounds/wiggle.wav");
+			}
 			else if (FlxG.keys.justReleased.SPACE) state.chicken.playAnimation("idle");
 
 		} else {

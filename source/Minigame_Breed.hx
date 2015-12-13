@@ -118,6 +118,7 @@ class Minigame_Breed implements Minigame {
 				FlxG.sound.play("assets/sounds/hngh.wav");//bogogck
 				timer_gfxbg.kill();
 				timer_gfxfg.kill();
+				state.stars.setValue(1, state.egg.size / 2.25);
 			}
 			
 			if (FlxG.keys.justPressed.SPACE) {

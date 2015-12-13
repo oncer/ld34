@@ -21,6 +21,8 @@ class PlayState extends FlxState
 	public var bg:Backdrop;
 	public var egg:Egg;
 	public var chicken:Chicken;
+	public var stars:Stars;
+	
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
@@ -33,10 +35,13 @@ class PlayState extends FlxState
 		egg.create();
 		chicken = new Chicken(100, 50);
 		chicken.create();
+		stars = new Stars();
+		stars.create(240, 48);
 		
 		add(bg);
 		add(egg);
 		add(chicken);
+		add(stars);
 
 		minigames = [
 			new Minigame_Lay(),
@@ -70,6 +75,7 @@ class PlayState extends FlxState
 	override public function update():Void
 	{
 		super.update();
+		stars.update();
 		minigames[currentMinigame].update();
 		
 		

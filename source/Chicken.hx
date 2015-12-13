@@ -27,7 +27,7 @@ class Chicken extends FlxSprite {
 
 	public function create():Void {
 		loadGraphic("assets/images/chicksheet.png", true, 64, 64);
-		createIndividual(19);
+		createIndividual(0);
 		animation.play("idle");
 		offset = new FlxPoint(32, height);
 		origin = offset;
@@ -55,7 +55,7 @@ class Chicken extends FlxSprite {
 	
 	public function createIndividual(type:Int = -1) {
 		if (type < 0)
-			type = FlxRandom.intRanged(0, 17);
+			type = FlxRandom.intRanged(0, 21);
 		animation.destroyAnimations();
 		var offset = 6 * type;
 		animation.add("idle", [0+offset,1+offset], 7, true);

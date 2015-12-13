@@ -123,7 +123,7 @@ class Minigame_Breed implements Minigame {
 				FlxG.sound.play("assets/sounds/rocket.wav");
 				FlxG.sound.play("assets/sounds/hngh.wav");//bogogck
 				timebar.kill();
-				state.stars.setScore(1, (state.egg.size / 2.25) * (state.egg.size / 2.25)); // squared score
+				state.stars.setScore(1, (state.egg.size / 1.55) * (state.egg.size / 1.55)); // squared score
 			}
 			
 			if (FlxG.keys.justPressed.SPACE) {

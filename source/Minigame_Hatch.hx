@@ -60,6 +60,7 @@ class Minigame_Hatch implements Minigame {
 	public function init():Void
 	{
 		timer = new FlxTimer(1, timerFinished, 0);
+		FlxG.sound.play("assets/sounds/circle.wav");
 		iter = 0;
 		score = 0;
 		
@@ -117,7 +118,7 @@ class Minigame_Hatch implements Minigame {
 		circle.scale.y = s;
 		circle.alpha = a;
 
-		if (FlxG.keys.justPressed.SPACE && iter < 2) {
+		if (FlxG.keys.justPressed.SPACE && iter <= 2) {
 			timer.complete(timer);
 			score += a / 3;
 			rotateStrength = score;
@@ -147,8 +148,11 @@ class Minigame_Hatch implements Minigame {
 		if (iter < 3) {
 			// Start next iteration
 			timer.reset();
+			FlxG.sound.play("assets/sounds/circle.wav");
+			FlxG.sound.play("assets/sounds/crack.wav");
 		} else if (iter == 3) {
 			timer.cancel();
+			FlxG.sound.play("assets/sounds/plop.wav");
 			// Last iteration done
 			// ...
 			state.stars.setScore(2, Math.sqrt(score * 1.5)); // sqrt score bc hard *1.5 to help
@@ -167,6 +171,8 @@ class Minigame_Hatch implements Minigame {
 			state.chicken.y = chicken_start_y;
 			state.chicken.scale.x = 1;
 			state.chicken.scale.y = 1;
+			state.chicken.createIndividual();
+			state.chicken.playAnimation("idle");
 			new FlxTimer(2, function(t:FlxTimer) { state.nextMinigame(); } );
 		}
 		

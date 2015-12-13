@@ -90,10 +90,10 @@ class Minigame_Lay implements Minigame {
 				powerbar.currentValue = power;
 
 				// Set egg color
-				eggtype = 0;
+				var eggtype = 0;
 				if (power >  100)
 					eggtype = 1;
-				else if (power >= 127)
+				if (power >= 127)
 					eggtype = 2;
 				state.egg.animation.frameIndex = eggtype;
 	

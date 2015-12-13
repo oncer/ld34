@@ -70,11 +70,20 @@ class Minigame_Lay implements Minigame {
 		powerbar.revive();
 		powerbar_best.visible = false;
 		powerbar_best.revive();
+
+		powerbar.alpha = 0;
 	}
 
 	public function update():Void
 	{
 		
+		if (powerbar.alpha < 1) {
+			powerbar.alpha += 0.05;
+			time = 0;
+		} else {
+			time += power_dt;
+		}
+
 		if (substate == LaySubstate.WaitForInput) // powerbar charging
 		{
 			if (FlxG.keys.justPressed.SPACE)
@@ -121,8 +130,7 @@ class Minigame_Lay implements Minigame {
 				//	powerbar_sound_canplay = false;
 				//} else if (power > 0.5)
 				//	powerbar_sound_canplay = true;
-				time += power_dt;
-				power = 1 - Math.abs(Math.sin(time)); // Fast at top
+				power = 1 - Math.abs(Math.cos(time)); // Fast at top
 				power = Math.round(power * 128);
 				//trace (power);
 				
@@ -156,6 +164,7 @@ class Minigame_Lay implements Minigame {
 		substate = LaySubstate.Poop;
 		FlxG.sound.play("assets/sounds/fart.wav");
 		state.chicken.playAnimation("poop");
+		state.chicken.fart();
 
 		// Start timer for laying duration
 		timer.start(dur_poop, this.layEggDone); // Laying animation duration

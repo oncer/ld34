@@ -72,6 +72,8 @@ class Minigame_Hatch implements Minigame {
 		goal.y = state.egg.y - (state.egg.height*0.5) * state.egg.scale.y;
 		circle.x = goal.x;
 		circle.y = goal.y;
+		circle.scale.set(3, 3);
+		circle.alpha = 0;
 		goal.alpha = 0;
 		
 		goal.revive();
@@ -117,7 +119,7 @@ class Minigame_Hatch implements Minigame {
 		}
 
 		var p = timer.progress;
-		var s = (1 - p) * 2.25 + 0.75; //circle scale: 2 ... 0.1
+		var s = (1 - p) * 2.25 + 0.75; //circle scale: 3 ... 0.75
 		var max_alpha_pos = 1 - (1 - 0.75) / 2.25;
 		var line_d = 1 / (1 - max_alpha_pos);
 		var a = 0.0;
@@ -132,6 +134,7 @@ class Minigame_Hatch implements Minigame {
 		if (FlxG.keys.justPressed.SPACE && iter <= 2) {
 			timer.complete(timer);
 			score += a / 3;
+			trace(a/3);
 			rotateStrength = score;
 			//FlxG.cameras.flash(0xbfffffff, 0.5, null, true);
 			state.egg.pulse(a * a);
@@ -170,7 +173,7 @@ class Minigame_Hatch implements Minigame {
 			FlxG.sound.play("assets/sounds/plop.wav");
 			// Last iteration done
 			// ...
-			state.stars.setScore(2, Math.sqrt(score * 1.5)); // sqrt score bc hard *1.5 to help
+			state.stars.setScore(2, Math.sqrt(score) + 0.1); // +0.1 to help
 			//state.stars.finalScore();
 			goal.kill();
 			circle.kill();	

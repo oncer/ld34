@@ -22,6 +22,8 @@ class PlayState extends FlxState
 	public var egg:Egg;
 	public var chicken:Chicken;
 	public var stars:Stars;
+
+	public var init:Bool;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -53,6 +55,8 @@ class PlayState extends FlxState
 		nextMinigame();
 		
 		FlxG.sound.playMusic("assets/music/bgm.wav", 1, true);
+		
+		FlxG.cameras.flash(0xff000000, 1);
 	}
 
 	public function nextMinigame():Void

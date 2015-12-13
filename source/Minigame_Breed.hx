@@ -34,6 +34,11 @@ class Minigame_Breed implements Minigame {
 	private var zoomTargetBG:Float;
 	private var finalEggSize:Float;
 
+	private var score:Float;
+	private var maxScore:Float;
+
+	private static inline var TIME:Int = 10; // 10 seconds
+
 	public function new():Void
 	{
 		state = cast(FlxG.state, PlayState);
@@ -51,7 +56,7 @@ class Minigame_Breed implements Minigame {
 		FlxG.watch.add(this, "size");
 		
 		
-		timer = new FlxTimer(10); // 10 seconds?!
+		timer = new FlxTimer(TIME);
 		sndTimer = new FlxTimer(0.5, function(t:FlxTimer) { FlxG.sound.play("assets/sounds/tick.wav"); }, 19);
 
 		thermoSlider = new FlxSprite(240, 440, "assets/images/thermometer.png");
@@ -74,6 +79,9 @@ class Minigame_Breed implements Minigame {
 		
 		canCluck = true;
 		cluckTimer = new FlxTimer(0.25, function(t:FlxTimer) { canCluck = true; });
+
+		score = 0;
+		maxScore = 0;
 	}
 
 	public function destroy():Void
@@ -103,6 +111,9 @@ class Minigame_Breed implements Minigame {
 			echange = echange * (state.egg.animation.frameIndex/2 * state.egg.animation.frameIndex/2 + 1) * 0.333;
 			state.egg.size += echange;
 
+			score += 1 - Math.abs(temperature);
+			maxScore += 1;
+
 			if (FlxG.keys.pressed.SPACE) {
 				state.chicken.vibrate(240, cur_chicken_y, 2); //Loltest
 				tchange += 0.001;
@@ -129,7 +140,8 @@ class Minigame_Breed implements Minigame {
 				FlxG.sound.play("assets/sounds/rocket.wav");
 				FlxG.sound.play("assets/sounds/hngh.wav");//bogogck
 				timebar.kill();
-				state.stars.setScore(1, (state.egg.size / 1.55) * (state.egg.size / 1.55)); // squared score
+				var scoreRatio:Float = score / maxScore;
+				state.stars.setScore(1, scoreRatio * scoreRatio + 0.05);
 			}
 			
 			if (FlxG.keys.justPressed.SPACE) {

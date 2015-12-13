@@ -1,8 +1,6 @@
 package;
 
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.FlxState;
+import flixel.*;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
@@ -15,6 +13,8 @@ class PlayState extends FlxState
 	public static inline var MINIGAME_LAY:Int = 0;
 	public static inline var MINIGAME_BREED:Int = 1;
 	public static inline var MINIGAME_HATCH:Int = 2; 
+
+	public var cam:FlxCamera;
 
 	public var currentMinigame:Int;
 	var minigames:Array<Minigame>;

@@ -5,6 +5,8 @@ using flixel.util.FlxSpriteUtil;
 
 class Egg extends flixel.FlxSprite
 {
+	public var zoom:Float;
+
 	public var size(get, set):Float;
 	public function get_size():Float {
 		return scale.x;

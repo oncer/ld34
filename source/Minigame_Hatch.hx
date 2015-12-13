@@ -23,10 +23,11 @@ class Minigame_Hatch implements Minigame {
 		
 		goal = new FlxSprite(state.egg.x, state.egg.y, "assets/images/circle.png");
 		goal.centerOrigin();
-		goal.centerOffsets();
+		goal.offset.set(goal.origin.x, goal.origin.y);
+		goal.alpha = 0.5;
 		circle = new FlxSprite(state.egg.x, state.egg.y, "assets/images/circle.png");
 		circle.centerOrigin();
-		circle.centerOffsets();
+		circle.offset.set(circle.origin.x, circle.origin.y);
 		
 		state.add(goal); goal.kill();
 		state.add(circle); circle.kill();
@@ -41,8 +42,8 @@ class Minigame_Hatch implements Minigame {
 		state.egg.x = 240;
 		state.egg.y = 480 * Backdrop.HORIZON;
 		
-		goal.x = state.egg.x-32;
-		goal.y = state.egg.y-48;
+		goal.x = state.egg.x;
+		goal.y = state.egg.y - 16;
 		circle.x = goal.x;
 		circle.y = goal.y;
 		
@@ -82,15 +83,16 @@ class Minigame_Hatch implements Minigame {
 	
 	public function timerFinished(FlxTimer):Void {
 		trace ("Timer iteration finished: " + iter);
-		if (iter >= 2) {
+		++iter;
+		if (iter < 3) {
+			// Start next iteration
+			timer.reset();
+		} else if (iter == 3) {
 			timer.cancel();
 			// Last iteration done
 			// ...
-			state.stars.setScore(2, Math.sqrt(score*1.5)); // sqrt score bc hard *1.5 to help
-		} else {
-			// Start next iteration
-			++iter;
-			timer.reset();
+			state.stars.setScore(2, Math.sqrt(score * 1.5)); // sqrt score bc hard *1.5 to help
+			//state.stars.finalScore();
 		}
 		
 	}

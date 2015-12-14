@@ -109,12 +109,13 @@ class Backdrop extends FlxGroup
 			zf >>= 1;
 		}
 		//zoom *= 0.99;//DEBUG!
+		//if (FlxG.keys.pressed.W) trace (zoom);
 		if (!switching) {
-			if ((zoom < 0.00002) && musicState == 2) {
+			if ((zoom < 0.000023) && musicState == 2) {
 				switchTimer.reset();
 				switching = true;
 			}
-			else if (zoom < 0.007 && zoom > 0.00002 && musicState == 1) {
+			else if (zoom < 0.008 && zoom > 0.000023 && musicState == 1) {
 				switchTimer.reset();
 				switching = true;
 			}
@@ -125,8 +126,6 @@ class Backdrop extends FlxGroup
 			music1.volume = 1 - a;
 			music2.volume = a;
 		}
-		//0.464 .. 0.00000178
-		//var a = (zoom - 0.00000178) / (0.464 - 0.00000178);
 	}
 
 	public override function draw():Void

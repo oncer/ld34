@@ -1,6 +1,7 @@
 package;
 
 import flixel.*;
+import flixel.system.FlxSound;
 import flixel.util.*;
 import flixel.group.*;
 
@@ -12,6 +13,11 @@ class Backdrop extends FlxGroup
 	public var zoom:Float;
 	private var img:Array<FlxSprite>;
 	private var drawIdx:Int;
+	private var music1:FlxSound;
+	private var music2:FlxSound;
+	private var switchTimer:FlxTimer;
+	private var musicState:Int;
+	private var switching:Bool;
 
 	private static var images:Array<String> = [
 		"assets/images/backdrop02.png",
@@ -59,6 +65,25 @@ class Backdrop extends FlxGroup
 		}
 		zoom = 1;
 		drawIdx = 0;
+		
+		music1 = FlxG.sound.play("assets/music/bgm.wav", 1, true);
+		music2 = FlxG.sound.play("assets/music/bgm2.wav", 0, true);
+		musicState = 1;
+		switchTimer = new FlxTimer(1, switchMusic);
+		switchTimer.cancel();
+		switching = false;
+	}
+	
+	private function switchMusic(t:FlxTimer):Void {
+		musicState = 3 - musicState; // 2..1..2
+		switching = false;
+		if (musicState == 1) {
+			music1.volume = 1;
+			music2.volume = 0; 
+		} else {
+			music1.volume = 0;
+			music2.volume = 1; 
+		}
 	}
 
 	// zoom factor: 2048/2048 ... 480/2048
@@ -83,7 +108,25 @@ class Backdrop extends FlxGroup
 			}
 			zf >>= 1;
 		}
-		//zoom*=0.99;//DEBUG!
+		zoom *= 0.99;//DEBUG!
+		if (!switching) {
+			if ((zoom < 0.00002) && musicState == 2) {
+				switchTimer.reset();
+				switching = true;
+			}
+			else if (zoom < 0.007 && zoom > 0.00002 && musicState == 1) {
+				switchTimer.reset();
+				switching = true;
+			}
+		} else {
+			var a = switchTimer.progress;
+			if (musicState == 2)
+				a = 1 - a;
+			music1.volume = 1 - a;
+			music2.volume = a;
+		}
+		//0.464 .. 0.00000178
+		//var a = (zoom - 0.00000178) / (0.464 - 0.00000178);
 	}
 
 	public override function draw():Void

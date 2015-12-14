@@ -102,9 +102,10 @@ class Minigame_Breed implements Minigame {
 		if (substate == BreedSubstate.Breed) {
 			var cur_chicken_y = 480 * Backdrop.HORIZON - state.egg.offset.y * state.egg.size + 3;
 
-			temperature = Math.min(1, Math.max(-1, temperature + tchange));
-			if (temperature < -0.99 && FlxG.keys.pressed.SPACE) tchange = Math.max(0, tchange); //added keypress necessary --> slider can go all the way to the left
-			if (temperature > 0.99 && !FlxG.keys.pressed.SPACE) tchange = Math.min(0, tchange); //.. same for other side
+			temperature = Math.min(1, Math.max( -1, temperature + tchange));
+			var pressing = InputUtils.pressed();
+			if (temperature < -0.99 && pressing) tchange = Math.max(0, tchange); //added keypress necessary --> slider can go all the way to the left
+			if (temperature > 0.99 && !pressing) tchange = Math.min(0, tchange); //.. same for other side
 			temperature -= 0.03*(1.0 - temperature*temperature);
 
 			echange = Math.max(0, (1 - 1.75 * Math.abs(temperature))) * 0.006; //changed --> bad temperatures no growth
@@ -114,7 +115,7 @@ class Minigame_Breed implements Minigame {
 			score += 1 - Math.abs(temperature);
 			maxScore += 1;
 
-			if (FlxG.keys.pressed.SPACE) {
+			if (pressing) {
 				state.chicken.vibrate(240, cur_chicken_y, 2); //Loltest
 				tchange += 0.001;
 			} else {
@@ -144,7 +145,7 @@ class Minigame_Breed implements Minigame {
 				state.stars.setScore(1, scoreRatio * scoreRatio + 0.05);
 			}
 			
-			if (FlxG.keys.justPressed.SPACE) {
+			if (InputUtils.justPressed()) {
 				state.chicken.playAnimation("wiggle");
 				if (canCluck) {
 					var cluck = flixel.util.FlxRandom.intRanged(2, 4);

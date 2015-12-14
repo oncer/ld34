@@ -123,16 +123,18 @@ class Stars extends flixel.group.FlxGroup
 	{
 		barsBG.remove(bars[i]);
 		barsFG.add(bars[i]);
-		score = Math.min(1, Math.max(0, score)); // limit score to 0..1
-		scores[i] = score;
+		var score_ = Math.min(1, Math.max(0, score)); // limit score to 0..1
+		scores[i] = score_;
 		// scale for gfx, bc border counts to bar!
-		var val = score * 0.85;
+		var val = score_ * 0.85;
 		values[i] = val;
 		if (i == 2) {
 			new FlxTimer(1.5, finalAnimation);
 		}
 		timers[i].start(1);
 		timers[i].active = true;
+		
+		trace("Score[" + i + "]: " + score + " -> " + score_);
 	}
 
 	private function addScoreAppear(timer:FlxTimer):Void

@@ -10,7 +10,7 @@ class Chicken extends FlxSprite {
 	private var explosion:FlxSprite;
 	private var ckn_permutation:Array<Int>;
 	private var ckn_i:Int;
-	private var ckn_n:Int = 22;
+	private var ckn_n:Int = 27;
 
 	private var _zoom:Float = 1;
 	public var zoom(get,set):Float;
@@ -42,7 +42,8 @@ class Chicken extends FlxSprite {
 		var a = [];
 		for (i in 1...(ckn_n - 1)) a.push(i);
 		shuffleArray(a);
-		a.insert(0, 0); // add 0 chicken to beginning
+		a.insert(0, 0); // at position 0 add chicken 0
+		//a.reverse();
 		return a;
 	}
 	

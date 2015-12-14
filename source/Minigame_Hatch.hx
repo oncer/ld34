@@ -132,7 +132,7 @@ class Minigame_Hatch implements Minigame {
 		circle.scale.y = s;
 		circle.alpha = a;
 
-		if (FlxG.keys.justPressed.SPACE && iter <= 2) {
+		if (InputUtils.justPressed() && iter <= 2) {
 			ok_hit = p < max_alpha_pos ? a > 0.9 : a > 0.6;
 			timer.complete(timer);
 			score += a / 3;

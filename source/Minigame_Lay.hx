@@ -86,7 +86,7 @@ class Minigame_Lay implements Minigame {
 
 		if (substate == LaySubstate.WaitForInput) // powerbar charging
 		{
-			if (FlxG.keys.justPressed.SPACE)
+			if (InputUtils.justPressed())
 			{
 				substate = LaySubstate.Prepare;
 				//trace("PooPower: " + power);

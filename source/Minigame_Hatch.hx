@@ -166,7 +166,7 @@ class Minigame_Hatch implements Minigame {
 		++iter;
 		cracks.animation.frameIndex = Std.int(Math.min(2, iter));
 		if (iter <= 3 && !ok_hit) {
-			FlxG.sound.play("assets/sounds/fart.wav"); //TODO Neg sound
+			FlxG.sound.play("assets/sounds/fail.wav", 0.7); //TODO Neg sound
 		}
 		ok_hit = false;
 		if (iter < 3) {

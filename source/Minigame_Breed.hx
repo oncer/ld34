@@ -108,7 +108,7 @@ class Minigame_Breed implements Minigame {
 			if (temperature > 0.99 && !pressing) tchange = Math.min(0, tchange); //.. same for other side
 			temperature -= 0.03*(1.0 - temperature*temperature);
 
-			echange = Math.max(0, (1 - 2 * Math.abs(temperature))) * 0.004; //changed --> bad temperatures no growth
+			echange = Math.max(0, (1 - 1.75 * Math.abs(temperature))) * 0.006; //changed --> bad temperatures no growth
 			echange = echange * (state.egg.animation.frameIndex/2 * state.egg.animation.frameIndex/2 + 1) * 0.333;
 			state.egg.size += echange;
 
@@ -156,8 +156,8 @@ class Minigame_Breed implements Minigame {
 			}
 			else if (FlxG.keys.justReleased.SPACE) state.chicken.playAnimation("idle");
 		} else if (substate == BreedSubstate.FlyZoom) {
-			//TODO fly
 			var f:Float = (timer.finished) ? 1.0 : timer.progress;
+			f = Math.sqrt(f);
 			state.chicken.velocity.y = Math.min(-300, Math.max(-1000, state.chicken.velocity.y - 1));
 			state.egg.size = finalEggSize + (Egg.SIZE_HATCH - finalEggSize) * f;
 			state.chicken.zoom = 1 + (zoomTargetChicken - 1) * f;

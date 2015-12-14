@@ -57,7 +57,7 @@ class PlayState extends FlxState
 		currentMinigame = -1;
 		nextMinigame();
 		
-		FlxG.sound.playMusic("assets/music/bgm.wav", 1, true);
+		//FlxG.sound.playMusic("assets/music/bgm.wav", 1, true);
 		
 		FlxG.cameras.flash(0xff000000, 1);
 		

@@ -17,6 +17,7 @@ class Minigame_Hatch implements Minigame {
 	private var circle:FlxSprite;
 	private var iter:Int;
 	private var score:Float;
+	private var ok_hit:Bool; //if hit was good enough not to play bad sound
 	
 	private var rotateStrength:Float;
 	private var rotateTime:Float;
@@ -119,8 +120,8 @@ class Minigame_Hatch implements Minigame {
 		}
 
 		var p = timer.progress;
-		var s = (1 - p) * 2.25 + 0.75; //circle scale: 3 ... 0.75
-		var max_alpha_pos = 1 - (1 - 0.75) / 2.25;
+		var s = (1 - p) * 2.25 + 0.5; //circle scale: 3 ... 0.5
+		var max_alpha_pos = 1 - (1 - 0.5) / 2.25;
 		var line_d = 1 / (1 - max_alpha_pos);
 		var a = 0.0;
 		if (p < max_alpha_pos)
@@ -132,6 +133,7 @@ class Minigame_Hatch implements Minigame {
 		circle.alpha = a;
 
 		if (FlxG.keys.justPressed.SPACE && iter <= 2) {
+			ok_hit = p < max_alpha_pos ? a > 0.9 : a > 0.6;
 			timer.complete(timer);
 			score += a / 3;
 			trace(a/3);
@@ -159,10 +161,14 @@ class Minigame_Hatch implements Minigame {
 	}
 	
 	public function timerFinished(FlxTimer):Void {
-		trace ("Timer iteration finished: " + iter);
+		trace ("Timer done: " + iter + " Hit ok: " + ok_hit);
 		
 		++iter;
 		cracks.animation.frameIndex = Std.int(Math.min(2, iter));
+		if (iter <= 3 && !ok_hit) {
+			FlxG.sound.play("assets/sounds/fart.wav"); //TODO Neg sound
+		}
+		ok_hit = false;
 		if (iter < 3) {
 			// Start next iteration
 			timer.reset();
@@ -173,7 +179,7 @@ class Minigame_Hatch implements Minigame {
 			FlxG.sound.play("assets/sounds/plop.wav");
 			// Last iteration done
 			// ...
-			state.stars.setScore(2, Math.sqrt(score) + 0.1); // +0.1 to help
+			state.stars.setScore(2, (score * score) / 0.43);
 			//state.stars.finalScore();
 			goal.kill();
 			circle.kill();	
@@ -189,7 +195,7 @@ class Minigame_Hatch implements Minigame {
 			state.chicken.y = chicken_start_y;
 			state.chicken.scale.x = 1;
 			state.chicken.scale.y = 1;
-			state.chicken.createIndividual();
+			state.chicken.createNextChicken();
 			state.chicken.playAnimation("idle");
 		}
 		

@@ -8,6 +8,9 @@ class Chicken extends FlxSprite {
 
 	private var rocketfire:FlxSprite;
 	private var explosion:FlxSprite;
+	private var ckn_permutation:Array<Int>;
+	private var ckn_i:Int;
+	private var ckn_n:Int = 22;
 
 	private var _zoom:Float = 1;
 	public var zoom(get,set):Float;
@@ -24,10 +27,39 @@ class Chicken extends FlxSprite {
 	public function get_zoom():Float {
 		return _zoom;
 	}
-
+	
+	public function shuffleArray(arr : Array<Int>) { 
+		var tmp : Int, j : Int, i : Int = arr.length;
+		while (i > 0) {
+			j = Std.int(Math.random() * i);
+			tmp = arr[--i];
+			arr[i] = arr[j];
+			arr[j] = tmp;
+		}
+	}
+	
+	public function computePermutation():Array<Int> {
+		var a = [];
+		for (i in 1...(ckn_n - 1)) a.push(i);
+		shuffleArray(a);
+		a.insert(0, 0); // add 0 chicken to beginning
+		return a;
+	}
+	
+	public function createNextChicken():Void {
+		if (ckn_i >= ckn_n || ckn_i < 0) {
+			ckn_i = 0;
+			ckn_permutation = computePermutation();
+			trace ("Ckn array: " + ckn_permutation);
+		}
+		createIndividual(ckn_permutation[ckn_i]);
+		ckn_i++;
+	}
+	
 	public function create():Void {
 		loadGraphic("assets/images/chicksheet.png", true, 64, 64);
-		createIndividual(0);
+		ckn_i = -1;
+		createNextChicken();
 		animation.play("idle");
 		offset = new FlxPoint(32, height);
 		origin = offset;
@@ -66,6 +98,7 @@ class Chicken extends FlxSprite {
 		facing = (Math.random() < 0.5) ? FlxObject.LEFT : FlxObject.RIGHT;
 	}
 
+		
 	public function rocket():Void
 	{
 		explosion.x = x;

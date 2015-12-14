@@ -4,6 +4,7 @@ import flixel.*;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
+import flixel.util.FlxTimer;
 
 /**
  * A FlxState which can be used for the actual gameplay.
@@ -22,6 +23,8 @@ class PlayState extends FlxState
 	public var egg:Egg;
 	public var chicken:Chicken;
 	public var stars:Stars;
+	private var fartTimer:FlxTimer;
+	private var canFart:Bool;
 
 	public var init:Bool;
 	
@@ -57,6 +60,9 @@ class PlayState extends FlxState
 		FlxG.sound.playMusic("assets/music/bgm.wav", 1, true);
 		
 		FlxG.cameras.flash(0xff000000, 1);
+		
+		canFart = true;
+		fartTimer = new FlxTimer(0.1, function(t:FlxTimer) { canFart = true; });
 	}
 
 	public function nextMinigame():Void
@@ -83,6 +89,14 @@ class PlayState extends FlxState
 		super.update();
 		stars.update();
 		minigames[currentMinigame].update();
+		
+		if (FlxG.keys.justPressed.F) {
+			if (canFart) {
+				canFart = false;
+				fartTimer.reset();
+				FlxG.sound.play("assets/sounds/fart.wav");
+			}
+		}
 		
 		
 		//DEBUG

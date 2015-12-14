@@ -10,7 +10,7 @@ class Chicken extends FlxSprite {
 	private var explosion:FlxSprite;
 	private var ckn_permutation:Array<Int>;
 	private var ckn_i:Int;
-	private var ckn_n:Int = 27;
+	private var ckn_n:Int = 25;
 
 	private var _zoom:Float = 1;
 	public var zoom(get,set):Float;

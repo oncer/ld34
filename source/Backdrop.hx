@@ -108,7 +108,7 @@ class Backdrop extends FlxGroup
 			}
 			zf >>= 1;
 		}
-		zoom *= 0.99;//DEBUG!
+		//zoom *= 0.99;//DEBUG!
 		if (!switching) {
 			if ((zoom < 0.00002) && musicState == 2) {
 				switchTimer.reset();
